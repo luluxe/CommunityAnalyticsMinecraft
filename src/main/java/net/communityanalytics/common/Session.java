@@ -95,12 +95,12 @@ public class Session {
 
 	public JSONObject toJSONObject() {
 		JSONObject session = new JSONObject();
-		session.put("uuid", this.uuid);
+		session.put("identifier", this.uuid);
 		session.put("name", this.name);
-		session.put("ip_connect", this.ip_connect);
-		session.put("ip_player", this.ip_player);
-		session.put("first_date", this.first_date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-		session.put("end_date", this.end_date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+		session.put("ip_connection", this.ip_connect);
+		session.put("ip_userf", this.ip_player);
+		session.put("join_at", this.first_date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+		session.put("quit_at", this.end_date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
 		return session;
 	}
 

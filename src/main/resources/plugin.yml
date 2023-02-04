@@ -1,6 +1,6 @@
 name: CommunityAnalytics
 author: Maxlego08
-main: net.communityanalytics.AnalyticsPlugin
+main: net.communityanalytics.spigot.AnalyticsPlugin
 website: https://groupez.dev
 version: 1.0.0
 api-version: 1.13

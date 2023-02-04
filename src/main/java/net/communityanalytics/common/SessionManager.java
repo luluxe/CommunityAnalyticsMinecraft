@@ -9,13 +9,22 @@ import java.util.concurrent.ExecutionException;
 
 import net.communityanalytics.common.utils.HttpRequest;
 import net.communityanalytics.common.utils.JSONObject;
+import net.communityanalytics.common.utils.PlateformeConfig;
 import net.communityanalytics.common.utils.Response;
 
 public class SessionManager {
 
 	private final String API_URL = "https://api.communityanalytics.fr/";
-
 	private final List<Session> sessions = new ArrayList<Session>();
+	private final PlateformeConfig config;
+
+	/**
+	 * @param config
+	 */
+	public SessionManager(PlateformeConfig config) {
+		super();
+		this.config = config;
+	}
 
 	/**
 	 * Recovers a session based on a uuid, if no session is found then the
@@ -52,6 +61,7 @@ public class SessionManager {
 			sessions.add(session.toJSONObject());
 
 		}
+		this.config.toJSONObject(data);
 		data.put("sessions", sessions.toArray());
 
 		HttpRequest httpRequest = new HttpRequest(this.API_URL + "sessions", data);

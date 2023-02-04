@@ -1,4 +1,4 @@
-package net.communityanalytics;
+package net.communityanalytics.spigot;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
