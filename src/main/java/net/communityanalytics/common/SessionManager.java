@@ -1,81 +1,124 @@
 package net.communityanalytics.common;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-
 import net.communityanalytics.common.utils.HttpRequest;
 import net.communityanalytics.common.utils.JSONObject;
 import net.communityanalytics.common.utils.PlateformeConfig;
 import net.communityanalytics.common.utils.Response;
 
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class SessionManager {
 
-	private final String API_URL = "https://api.communityanalytics.fr/";
-	private final List<Session> sessions = new ArrayList<Session>();
-	private final PlateformeConfig config;
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private final String API_URL = "https://communityanalytics.net/api/v1/";
+    private final List<Session> sessions = new ArrayList<Session>();
+    private PlateformeConfig config;
 
-	/**
-	 * @param config
-	 */
-	public SessionManager(PlateformeConfig config) {
-		super();
-		this.config = config;
-	}
+    public PlateformeConfig getConfig() {
+        return config;
+    }
 
-	/**
-	 * Recovers a session based on a uuid, if no session is found then the
-	 * optional will be empty
-	 * 
-	 * @param uuid
-	 *            User's UUID
-	 * @return Optional<Session> Optional that can contain the session
-	 */
-	public Optional<Session> find(UUID uuid) {
-		return this.sessions.stream().filter(session -> session.getUuid().equals(uuid)).findFirst();
-	}
+    public SessionManager() {
+        this.executor.scheduleAtFixedRate(this::sendAPI, 1, 1, TimeUnit.MINUTES);
+    }
 
-	/**
-	 * Add a session to the list
-	 * 
-	 * @param session
-	 */
-	public void add(Session session) {
-		this.sessions.add(session);
-	}
+    public void setConfig(PlateformeConfig config) {
+        this.config = config;
+    }
 
-	public void sendAPI() {
+    /**
+     * Recovers a session based on a uuid, if no session is found then the
+     * optional will be empty
+     *
+     * @param uuid User's UUID
+     * @return Optional<Session> Optional that can contain the session
+     */
+    public Optional<Session> find(UUID uuid) {
+        return this.sessions.stream().filter(session -> session.getUuid().equals(uuid)).findFirst();
+    }
 
-		// LoggerManager.printDebug("Send sessions to API")
+    /**
+     * Add a session to the list
+     *
+     * @param session New session
+     */
+    public void add(Session session) {
+        this.sessions.add(session);
+    }
 
-		JSONObject data = new JSONObject();
-		List<JSONObject> sessions = new ArrayList<>();
+    public void sendAPI() {
 
-		Iterator<Session> iterator = this.sessions.stream().filter(Session::isFinish).iterator();
-		while (iterator.hasNext()) {
-			Session session = iterator.next();
-			iterator.remove();
-			sessions.add(session.toJSONObject());
+        LoggerManager.printDebug("Send sessions to API");
 
-		}
-		this.config.toJSONObject(data);
-		data.put("sessions", sessions.toArray());
+        // json object that will be sent to the api
+        JSONObject data = new JSONObject();
 
-		HttpRequest httpRequest = new HttpRequest(this.API_URL + "sessions", data);
+        // List of sessions transformed into JSONObject
+        List<JSONObject> sessions = new ArrayList<>();
 
-		try {
-			Response response = httpRequest.submit().get();
-			if (response.getHttpCode() != 200) {
-				LoggerManager.printDebug("Error !");
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			LoggerManager.printDebug("Error !");
-			e.printStackTrace();
-		}
+        // We will retrieve the list of sessions that are completed and valid
+        Iterator<Session> iterator = this.sessions.iterator();
 
-	}
+        System.out.println("---");
+        System.out.println(this.sessions.size());
+        System.out.println(iterator);
+
+        while (iterator.hasNext()) {
+            Session session = iterator.next();
+
+            System.out.println(session);
+
+            // Si la session est terminée
+            if (session.isFinish()) {
+
+                iterator.remove();
+
+                // If the session is valid
+                if (session.isValid(this.config.getMinimumSessionDuration())) {
+                    sessions.add(session.toJSONObject());
+                }
+            }
+
+            System.out.println(sessions.size());
+        }
+
+
+        System.out.println(">>");
+        System.out.println("> " + sessions);
+        System.out.println(">>>");
+
+        if (sessions.isEmpty()) {
+            LoggerManager.printDebug("No session to sent");
+            return;
+        }
+
+        this.config.toJSONObject(data);
+        data.put("sessions", sessions.toArray());
+
+        System.out.println(data);
+
+        HttpRequest httpRequest = new HttpRequest(this.API_URL + "sessions", data, this.config.isDebug());
+
+        System.out.println(httpRequest);
+
+        try {
+            Response response = httpRequest.submit().get();
+
+            System.out.println(response);
+
+            if (response.getHttpCode() != 200) {
+                LoggerManager.printDebug("Error !");
+            } else {
+                LoggerManager.printDebug("Success !");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            LoggerManager.printDebug("Error !");
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -2,47 +2,44 @@ package net.communityanalytics.common.utils;
 
 public class PlateformeConfig {
 
-	private final String plateformId;
-	private final String plateformToken;
-	private final String serverName;
+    private final String platformId;
+    private final String platformToken;
+    private final String serverName;
+    private final boolean debug;
+    private final int minimumSessionDuration;
 
-	/**
-	 * @param plateformId
-	 * @param plateformToken
-	 * @param serverName
-	 */
-	public PlateformeConfig(String plateformId, String plateformToken, String serverName) {
-		super();
-		this.plateformId = plateformId;
-		this.plateformToken = plateformToken;
-		this.serverName = serverName;
-	}
+    public PlateformeConfig(String platformId, String platformToken, String serverName, boolean debug, int minimumSessionDuration) {
+        this.platformId = platformId;
+        this.platformToken = platformToken;
+        this.serverName = serverName;
+        this.debug = debug;
+        this.minimumSessionDuration = minimumSessionDuration;
+    }
 
-	/**
-	 * @return the plateformId
-	 */
-	public String getPlateformId() {
-		return plateformId;
-	}
+    public String getPlatformId() {
+        return platformId;
+    }
 
-	/**
-	 * @return the plateformToken
-	 */
-	public String getPlateformToken() {
-		return plateformToken;
-	}
+    public String getPlatformToken() {
+        return platformToken;
+    }
 
-	/**
-	 * @return the serverName
-	 */
-	public String getServerName() {
-		return serverName;
-	}
+    public String getServerName() {
+        return serverName;
+    }
 
-	public void toJSONObject(JSONObject data) {
-		data.put("platform_id", this.plateformId);
-		data.put("platform_token", this.plateformToken);
-		data.put("where", this.serverName);
-	}
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public int getMinimumSessionDuration() {
+        return minimumSessionDuration;
+    }
+
+    public void toJSONObject(JSONObject data) {
+        data.put("platform_id", this.platformId);
+        data.put("platform_token", this.platformToken);
+        data.put("where", this.serverName);
+    }
 
 }

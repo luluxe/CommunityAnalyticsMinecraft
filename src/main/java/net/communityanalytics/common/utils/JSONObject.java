@@ -32,7 +32,7 @@ public class JSONObject {
 			} else if (val instanceof UUID) {
 				builder.append(quote(val.toString()));
 			} else if (val instanceof Integer) {
-				builder.append(Integer.valueOf(String.valueOf(val)));
+				builder.append(val);
 			} else if (val instanceof Long) {
 				builder.append(Long.valueOf(String.valueOf(val)));
 			} else if (val instanceof Boolean) {
