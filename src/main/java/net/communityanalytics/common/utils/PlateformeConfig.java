@@ -2,13 +2,13 @@ package net.communityanalytics.common.utils;
 
 public class PlateformeConfig {
 
-    private final String platformId;
+    private final int platformId;
     private final String platformToken;
     private final String serverName;
     private final boolean debug;
     private final int minimumSessionDuration;
 
-    public PlateformeConfig(String platformId, String platformToken, String serverName, boolean debug, int minimumSessionDuration) {
+    public PlateformeConfig(int platformId, String platformToken, String serverName, boolean debug, int minimumSessionDuration) {
         this.platformId = platformId;
         this.platformToken = platformToken;
         this.serverName = serverName;
@@ -16,7 +16,7 @@ public class PlateformeConfig {
         this.minimumSessionDuration = minimumSessionDuration;
     }
 
-    public String getPlatformId() {
+    public int getPlatformId() {
         return platformId;
     }
 

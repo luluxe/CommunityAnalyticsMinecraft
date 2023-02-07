@@ -15,7 +15,7 @@ public class SpigotConfigLoader implements ConfigLoader {
     @Override
     public PlateformeConfig loadConfig() {
 
-        String platformId = yamlConfiguration.getString("platform-id");
+        int platformId = yamlConfiguration.getInt("platform-id");
         String platformToken = yamlConfiguration.getString("platform-token");
         boolean debug = yamlConfiguration.getBoolean("debug");
         int minimumSessionDuration = yamlConfiguration.getInt("minimum-session-duration");
