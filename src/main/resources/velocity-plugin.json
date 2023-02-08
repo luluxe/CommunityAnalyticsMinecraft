@@ -3,7 +3,8 @@
   "name": "CommunityAnalytics",
   "version": "1.0.0",
   "authors": [
-    "Maxlego08"
+    "Maxlego08",
+    "luluxe"
   ],
   "dependencies": [],
   "main": "net.communityanalytics.velocity.AnalyticsPlugin"

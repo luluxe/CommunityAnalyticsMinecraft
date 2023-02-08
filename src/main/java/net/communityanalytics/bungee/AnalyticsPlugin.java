@@ -38,9 +38,8 @@ public class AnalyticsPlugin extends Plugin implements Listener {
         scheduledExecutorService.execute(() -> {
             ProxiedPlayer player = event.getPlayer();
             String hostName = player.getPendingConnection().getVirtualHost().getHostString();
-            String playerIp = player.getAddress().getHostName();
+            String playerIp = player.getAddress().getAddress().toString().substring(1);
             playerInfos.put(player.getUniqueId(), new PlayerInfo(hostName, playerIp));
-            System.out.println("OKAY J'AI FINITO");
         });
     }
 
@@ -52,7 +51,6 @@ public class AnalyticsPlugin extends Plugin implements Listener {
 
     @EventHandler
     public void onMessage(PluginMessageEvent event) {
-
         if (!event.getTag().equals(SessionManager.channelName)) {
             return;
         }
@@ -73,5 +71,4 @@ public class AnalyticsPlugin extends Plugin implements Listener {
             }
         }
     }
-
 }

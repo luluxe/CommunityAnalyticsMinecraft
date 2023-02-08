@@ -57,6 +57,8 @@ public class AnalyticsPlugin extends JavaPlugin implements Listener, PluginMessa
 
     @Override
     public void onDisable() {
+        getManager().sendAPI();
+
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
     }
