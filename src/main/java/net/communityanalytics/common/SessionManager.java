@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 public class SessionManager {
 
+    public static String channelName = "com:analytics";
+
     private ScheduledFuture<?> scheduledFuture = null;
     private final String API_URL = "https://communityanalytics.net/api/v1/";
     private final List<Session> sessions = new ArrayList<Session>();

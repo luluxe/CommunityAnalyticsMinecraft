@@ -10,8 +10,8 @@ public class Session {
 
     private final UUID uuid;
     private final String name;
-    private final String ipConnect;
-    private final String ipPlayer;
+    private String ipConnect;
+    private String ipPlayer;
     private final LocalDateTime firstDate;
     private LocalDateTime endDate;
 
@@ -52,6 +52,14 @@ public class Session {
 
     public LocalDateTime getEndDate() {
         return endDate;
+    }
+
+    public void setIpConnect(String ipConnect) {
+        this.ipConnect = ipConnect;
+    }
+
+    public void setIpPlayer(String ipPlayer) {
+        this.ipPlayer = ipPlayer;
     }
 
     /**
