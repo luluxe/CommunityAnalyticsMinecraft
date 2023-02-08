@@ -3,6 +3,7 @@ package net.communityanalytics.spigot;
 import net.communityanalytics.common.Session;
 import net.communityanalytics.common.SessionManager;
 import net.communityanalytics.common.utils.ConfigLoader;
+import net.communityanalytics.common.utils.ILogger;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,15 +29,20 @@ public class AnalyticsPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
-        getLogger().info("Je lance le plugin");
+        ILogger logger = new SpigotLogger(this);
+        manager.setLogger(logger);
+
+        logger.printInfo("Loading the plugin !");
 
         this.getServer().getPluginManager().registerEvents(this, this);
         this.saveDefaultConfig();
 
         this.loadConfiguration();
+
+        this.getCommand("communityanalyticsreload").setExecutor(new CommandReload(this));
     }
 
-    private void loadConfiguration() {
+    public void loadConfiguration() {
 
         YamlConfiguration yamlConfiguration = (YamlConfiguration) this.getConfig();
         ConfigLoader loader = new SpigotConfigLoader(yamlConfiguration);
@@ -46,7 +52,6 @@ public class AnalyticsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getLogger().info("Je me décharge !");
     }
 
     @EventHandler
@@ -64,7 +69,6 @@ public class AnalyticsPlugin extends JavaPlugin implements Listener {
         String playerIp = player.getAddress().getHostString();
         Session session = new Session(player.getUniqueId(), player.getName(), hostName, playerIp);
         this.manager.add(session);
-        System.out.println(session);
     }
 
     @EventHandler
@@ -77,5 +81,7 @@ public class AnalyticsPlugin extends JavaPlugin implements Listener {
         }
     }
 
-
+    public SessionManager getManager() {
+        return manager;
+    }
 }

@@ -5,3 +5,10 @@ website: https://groupez.dev
 version: 1.0.0
 api-version: 1.13
 commands:
+  communityanalyticsreload:
+    permission: "communityanalytics.reload"
+    permission-message: "You don't have permission for this command."
+    description: "Reload plugin configuration"
+    usage: "/communityanalyticsreload"
+    aliases:
+      - "car"

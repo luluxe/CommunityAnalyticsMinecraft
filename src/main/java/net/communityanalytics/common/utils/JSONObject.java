@@ -27,8 +27,6 @@ public class JSONObject {
 			Object val = entry.getValue();
 			builder.append(quote(entry.getKey())).append(":");
 
-			System.out.println("CURRENT : " + val + " -> " + val.getClass());
-
 			if (val instanceof String) {
 				builder.append(quote(String.valueOf(val)));
 			} else if (val instanceof UUID) {

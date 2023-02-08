@@ -1,9 +1,6 @@
 package net.communityanalytics.common;
 
-import net.communityanalytics.common.utils.HttpRequest;
-import net.communityanalytics.common.utils.JSONObject;
-import net.communityanalytics.common.utils.PlateformeConfig;
-import net.communityanalytics.common.utils.Response;
+import net.communityanalytics.common.utils.*;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -17,6 +14,7 @@ public class SessionManager {
     private final String API_URL = "https://communityanalytics.net/api/v1/";
     private final List<Session> sessions = new ArrayList<Session>();
     private PlateformeConfig config;
+    private ILogger logger;
 
     public PlateformeConfig getConfig() {
         return config;
@@ -28,6 +26,14 @@ public class SessionManager {
 
     public void setConfig(PlateformeConfig config) {
         this.config = config;
+    }
+
+    public void setLogger(ILogger logger) {
+        this.logger = logger;
+    }
+
+    public ILogger getLogger() {
+        return logger;
     }
 
     /**
@@ -52,7 +58,7 @@ public class SessionManager {
 
     public void sendAPI() {
 
-        LoggerManager.printDebug("Send sessions to API");
+        this.logger.printDebug("Send sessions to API");
 
         // json object that will be sent to the api
         JSONObject data = new JSONObject();
@@ -92,7 +98,7 @@ public class SessionManager {
         System.out.println(">>>");
 
         if (sessions.isEmpty()) {
-            LoggerManager.printDebug("No session to sent");
+            this.logger.printDebug("No session to sent");
             return;
         }
 
@@ -111,12 +117,12 @@ public class SessionManager {
             System.out.println(response);
 
             if (response.getHttpCode() != 200) {
-                LoggerManager.printDebug("Error !");
+                this.logger.printDebug("Error !");
             } else {
-                LoggerManager.printDebug("Success !");
+                this.logger.printDebug("Success !");
             }
         } catch (InterruptedException | ExecutionException e) {
-            LoggerManager.printDebug("Error !");
+            this.logger.printDebug("Error !");
             e.printStackTrace();
         }
     }
