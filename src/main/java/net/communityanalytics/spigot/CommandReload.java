@@ -3,7 +3,6 @@ package net.communityanalytics.spigot;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
 
 public class CommandReload implements CommandExecutor {
 
@@ -14,7 +13,7 @@ public class CommandReload implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+    public boolean onCommand(CommandSender sender, Command command, String s, String[] strings) {
 
         this.plugin.reloadConfig();
         this.plugin.loadConfiguration();
