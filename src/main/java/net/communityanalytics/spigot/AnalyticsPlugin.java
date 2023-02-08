@@ -103,7 +103,6 @@ public class AnalyticsPlugin extends JavaPlugin implements Listener, PluginMessa
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-
         if (!channel.equals(SessionManager.channelName)) {
             return;
         }

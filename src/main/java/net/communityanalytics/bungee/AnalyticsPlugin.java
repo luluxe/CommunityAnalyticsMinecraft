@@ -38,7 +38,7 @@ public class AnalyticsPlugin extends Plugin implements Listener {
         scheduledExecutorService.execute(() -> {
             ProxiedPlayer player = event.getPlayer();
             String hostName = player.getPendingConnection().getVirtualHost().getHostString();
-            String playerIp = player.getAddress().getAddress().toString().substring(1);
+            String playerIp = player.getAddress().getHostString();
             playerInfos.put(player.getUniqueId(), new PlayerInfo(hostName, playerIp));
         });
     }
