@@ -31,7 +31,7 @@ public class SessionManager {
     public SessionManager() {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         this.scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(() -> {
-            if (this.logger != null && this.logger.isPluginEnable() && this.scheduledFuture != null) {
+            if (this.logger != null && !this.logger.isPluginEnable() && this.scheduledFuture != null) {
                 this.scheduledFuture.cancel(true);
             } else {
                 this.sendAPI();
