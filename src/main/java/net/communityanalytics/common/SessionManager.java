@@ -8,6 +8,7 @@ import net.communityanalytics.common.utils.PlateformeConfig;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -103,19 +104,28 @@ public class SessionManager {
         this.config.toJSONObject(data);
         data.add("sessions", sessions);
 
-        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+        // Send request
+        HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://communityanalytics.net/api/v1/sessions"))
                 .header("Content-Type", "application/json")
-                .method("POST", java.net.http.HttpRequest.BodyPublishers.ofString(data.toString()))
+                .method("POST", HttpRequest.BodyPublishers.ofString(data.toString()))
                 .build();
+
+        HttpResponse<String> response = null;
         try {
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.statusCode());
-            System.out.println(response.body());
+            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            if (this.config.isDebug()) {
+                e.printStackTrace();
+            }
         }
 
+        // Send debug
+        if (response == null) {
+            this.logger.printDebug("Error with response !");
+        } else {
+            this.logger.printDebug("Requête with code " + response.statusCode() + " and body " + response.body());
+        }
     }
 
 }

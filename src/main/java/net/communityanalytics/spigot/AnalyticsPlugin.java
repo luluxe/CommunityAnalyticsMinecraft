@@ -20,9 +20,6 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Hello world!
- */
 public class AnalyticsPlugin extends JavaPlugin implements Listener {
 
     private final Map<UUID, String> hostPlayers = new HashMap<>();
@@ -44,7 +41,7 @@ public class AnalyticsPlugin extends JavaPlugin implements Listener {
         this.getCommand("communityanalyticsreload").setExecutor(new CommandReload(this));
 
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            if (!this.isEnabled()){
+            if (!this.isEnabled()) {
 
             }
         }, 1, 1, TimeUnit.MINUTES);
