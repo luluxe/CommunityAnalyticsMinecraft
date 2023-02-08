@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Hello world!
@@ -40,6 +42,12 @@ public class AnalyticsPlugin extends JavaPlugin implements Listener {
         this.loadConfiguration();
 
         this.getCommand("communityanalyticsreload").setExecutor(new CommandReload(this));
+
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+            if (!this.isEnabled()){
+
+            }
+        }, 1, 1, TimeUnit.MINUTES);
     }
 
     public void loadConfiguration() {

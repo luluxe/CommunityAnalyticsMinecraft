@@ -1,9 +1,8 @@
 package net.communityanalytics.common;
 
-import net.communityanalytics.common.utils.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
@@ -69,14 +68,14 @@ public class Session {
      *
      * @return JSONObject
      */
-    public JSONObject toJSONObject() {
-        JSONObject session = new JSONObject();
-        session.put("identifier", this.uuid);
-        session.put("name", this.name);
-        session.put("ip_connection", this.ipConnect);
-        session.put("ip_user", this.ipPlayer);
-        session.put("join_at", this.firstDate.toString());
-        session.put("quit_at", this.endDate.toString());
+    public JsonObject toJSONObject() {
+        JsonObject session = new JsonObject();
+        session.addProperty("identifier", this.uuid.toString());
+        session.addProperty("name", this.name);
+        session.addProperty("ip_connection", this.ipConnect);
+        session.addProperty("ip_user", this.ipPlayer);
+        session.addProperty("join_at", this.firstDate.toString());
+        session.addProperty("quit_at", this.endDate.toString());
         return session;
     }
 

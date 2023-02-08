@@ -26,4 +26,9 @@ public class SpigotLogger implements ILogger {
     public void printError(String message) {
         this.plugin.getLogger().severe(message);
     }
+
+    @Override
+    public boolean isPluginEnable() {
+        return this.plugin.isEnabled();
+    }
 }

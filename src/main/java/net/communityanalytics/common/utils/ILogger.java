@@ -7,4 +7,6 @@ public interface ILogger {
     void printInfo(String message);
 
     void printError(String message);
+
+    boolean isPluginEnable();
 }

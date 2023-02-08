@@ -1,5 +1,7 @@
 package net.communityanalytics.common.utils;
 
+import com.google.gson.JsonObject;
+
 public class PlateformeConfig {
 
     private final int platformId;
@@ -36,10 +38,10 @@ public class PlateformeConfig {
         return minimumSessionDuration;
     }
 
-    public void toJSONObject(JSONObject data) {
-        data.put("platform_id", this.platformId);
-        data.put("platform_token", this.platformToken);
-        data.put("where", this.serverName);
+    public void toJSONObject(JsonObject data) {
+        data.addProperty("platform_id", this.platformId);
+        data.addProperty("platform_token", this.platformToken);
+        data.addProperty("where", this.serverName);
     }
 
 }

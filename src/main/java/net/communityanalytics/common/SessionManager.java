@@ -1,16 +1,23 @@
 package net.communityanalytics.common;
 
-import net.communityanalytics.common.utils.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import net.communityanalytics.common.utils.ILogger;
+import net.communityanalytics.common.utils.PlateformeConfig;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class SessionManager {
 
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> scheduledFuture = null;
     private final String API_URL = "https://communityanalytics.net/api/v1/";
     private final List<Session> sessions = new ArrayList<Session>();
     private PlateformeConfig config;
@@ -21,7 +28,14 @@ public class SessionManager {
     }
 
     public SessionManager() {
-        this.executor.scheduleAtFixedRate(this::sendAPI, 1, 1, TimeUnit.MINUTES);
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        this.scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(() -> {
+            if (this.logger != null && this.logger.isPluginEnable() && this.scheduledFuture != null) {
+                this.scheduledFuture.cancel(true);
+            } else {
+                this.sendAPI();
+            }
+        }, 1, 1, TimeUnit.MINUTES);
     }
 
     public void setConfig(PlateformeConfig config) {
@@ -60,23 +74,14 @@ public class SessionManager {
 
         this.logger.printDebug("Send sessions to API");
 
-        // json object that will be sent to the api
-        JSONObject data = new JSONObject();
-
-        // List of sessions transformed into JSONObject
-        List<JSONObject> sessions = new ArrayList<>();
+        JsonObject data = new JsonObject();
+        JsonArray sessions = new JsonArray();
 
         // We will retrieve the list of sessions that are completed and valid
         Iterator<Session> iterator = this.sessions.iterator();
 
-        System.out.println("---");
-        System.out.println(this.sessions.size());
-        System.out.println(iterator);
-
         while (iterator.hasNext()) {
             Session session = iterator.next();
-
-            System.out.println(session);
 
             // Si la session est terminée
             if (session.isFinish()) {
@@ -88,14 +93,7 @@ public class SessionManager {
                     sessions.add(session.toJSONObject());
                 }
             }
-
-            System.out.println(sessions.size());
         }
-
-
-        System.out.println(">>");
-        System.out.println("> " + sessions);
-        System.out.println(">>>");
 
         if (sessions.isEmpty()) {
             this.logger.printDebug("No session to sent");
@@ -103,28 +101,21 @@ public class SessionManager {
         }
 
         this.config.toJSONObject(data);
-        data.put("sessions", sessions.toArray());
+        data.add("sessions", sessions);
 
-        System.out.println(data);
-
-        HttpRequest httpRequest = new HttpRequest(this.API_URL + "sessions", data, this.config.isDebug());
-
-        System.out.println(httpRequest);
-
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(URI.create("https://communityanalytics.net/api/v1/sessions"))
+                .header("Content-Type", "application/json")
+                .method("POST", java.net.http.HttpRequest.BodyPublishers.ofString(data.toString()))
+                .build();
         try {
-            Response response = httpRequest.submit().get();
-
-            System.out.println(response);
-
-            if (response.getHttpCode() != 200) {
-                this.logger.printDebug("Error !");
-            } else {
-                this.logger.printDebug("Success !");
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            this.logger.printDebug("Error !");
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.statusCode());
+            System.out.println(response.body());
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
 }

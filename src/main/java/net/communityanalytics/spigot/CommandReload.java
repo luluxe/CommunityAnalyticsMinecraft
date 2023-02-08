@@ -27,25 +27,6 @@ public class CommandReload implements CommandExecutor {
 
         sender.sendMessage("§aConfig reload !");
 
-        System.out.println("J'envoie la sauce");
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://communityanalytics.net/api/v1/sessions"))
-                .header("Content-Type", "application/json")
-                .method("POST", HttpRequest.BodyPublishers.ofString("{\"platform_token\":\"xQhfYy8IhykTUU5VMIuWJEWyNhNLawIw5UNHzBHzXLmMctIZ18lLiMC4bQ7xUcGi\",\"sessions\":[{\"identifier\":\"1027fce0-0e2a-3bda-bde7-e699bd40bdc3\",\"join_at\":\"2023-02-08T10:13:45.256056511\",\"quit_at\":\"2023-02-08T10:14:24.573739667\",\"name\":\"Maxlego08\",\"ip_user\":\"37.174.61.147\",\"ip_connection\":\"join.onoria.fr.:26345\"}],\"platform_id\":1,\"where\":\"skyblock\"}"))
-                .build();
-        HttpResponse<String> response = null;
-        try {
-            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        assert response != null;
-
-        System.out.println(response.statusCode());
-        System.out.println(response.body());
-
         return true;
     }
 }
