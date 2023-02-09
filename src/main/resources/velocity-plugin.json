@@ -7,5 +7,5 @@
     "luluxe"
   ],
   "dependencies": [],
-  "main": "net.communityanalytics.velocity.AnalyticsPlugin"
+  "main": "net.communityanalytics.velocity.VelocityPlugin"
 }

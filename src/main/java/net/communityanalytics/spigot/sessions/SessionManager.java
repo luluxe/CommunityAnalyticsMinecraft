@@ -1,15 +1,11 @@
-package net.communityanalytics.common;
+package net.communityanalytics.spigot.sessions;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.communityanalytics.common.utils.ILogger;
-import net.communityanalytics.common.utils.PlateformeConfig;
+import net.communityanalytics.spigot.SpigotPlugin;
+import net.communityanalytics.spigot.api.MethodEnum;
+import net.communityanalytics.spigot.api.SpigotHttpRequest;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,40 +13,20 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class SessionManager {
-
-    public static String channelName = "com:analytics";
-
     private ScheduledFuture<?> scheduledFuture = null;
     private final String API_URL = "https://communityanalytics.net/api/v1/";
     private final List<Session> sessions = new ArrayList<Session>();
-    private PlateformeConfig config;
-    private ILogger logger;
-
-    public PlateformeConfig getConfig() {
-        return config;
-    }
 
     public SessionManager() {
+        SpigotPlugin.logger().printDebug("Session manager started");
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         this.scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(() -> {
-            if (this.logger != null && !this.logger.isPluginEnable() && this.scheduledFuture != null) {
+            if (SpigotPlugin.logger() != null && !SpigotPlugin.logger().isPluginEnable() && this.scheduledFuture != null) {
                 this.scheduledFuture.cancel(true);
             } else {
                 this.sendAPI();
             }
         }, 1, 1, TimeUnit.MINUTES);
-    }
-
-    public void setConfig(PlateformeConfig config) {
-        this.config = config;
-    }
-
-    public void setLogger(ILogger logger) {
-        this.logger = logger;
-    }
-
-    public ILogger getLogger() {
-        return logger;
     }
 
     /**
@@ -74,60 +50,40 @@ public class SessionManager {
     }
 
     public void sendAPI() {
-
-        this.logger.printDebug("Send sessions to API");
+        SpigotPlugin.logger().printDebug("Send sessions to API");
 
         JsonObject data = new JsonObject();
         JsonArray sessions = new JsonArray();
 
         // We will retrieve the list of sessions that are completed and valid
         Iterator<Session> iterator = this.sessions.iterator();
-
         while (iterator.hasNext()) {
             Session session = iterator.next();
-
-            // Si la session est terminée
+            // Si la session est terminate
             if (session.isFinish()) {
-
                 iterator.remove();
 
                 // If the session is valid
-                if (session.isValid(this.config.getMinimumSessionDuration())) {
+                if (session.isValid()) {
                     sessions.add(session.toJSONObject());
                 }
             }
         }
 
         if (sessions.isEmpty()) {
-            this.logger.printDebug("No session to sent");
+            SpigotPlugin.logger().printDebug("No session to send");
             return;
         }
-
-        this.config.toJSONObject(data);
+        data.addProperty("where", SpigotPlugin.config().getServerName());
         data.add("sessions", sessions);
 
         // Send request
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://communityanalytics.net/api/v1/sessions"))
-                .header("Content-Type", "application/json")
-                .method("POST", HttpRequest.BodyPublishers.ofString(data.toString()))
-                .build();
+        SpigotHttpRequest request = new SpigotHttpRequest("v1/sessions", MethodEnum.POST, data);
 
-        HttpResponse<String> response = null;
         try {
-            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            if (this.config.isDebug()) {
-                e.printStackTrace();
-            }
-        }
-
-        // Send debug
-        if (response == null) {
-            this.logger.printDebug("Error with response !");
-        } else {
-            this.logger.printDebug("Requête with code " + response.statusCode() + " and body " + response.body());
+            request.sendRequest();
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
-
 }

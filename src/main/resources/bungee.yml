@@ -1,4 +1,4 @@
 name: CommunityAnalytics
 author: Maxlego08
-main: net.communityanalytics.bungee.AnalyticsPlugin
+main: net.communityanalytics.bungee.BungeePlugin
 version: 1.0.0

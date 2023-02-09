@@ -1,14 +1,16 @@
 name: CommunityAnalytics
 author: Maxlego08
-main: net.communityanalytics.spigot.AnalyticsPlugin
-website: https://groupez.dev
+main: net.communityanalytics.spigot.SpigotPlugin
+website: https://communityanalytics.net
 version: 1.0.0
 api-version: 1.13
 commands:
-  communityanalyticsreload:
-    permission: "communityanalytics.reload"
+  communityanalytics:
+    permission: "communityanalytics.admin"
     permission-message: "You don't have permission for this command."
-    description: "Reload plugin configuration"
-    usage: "/communityanalyticsreload"
+    description: "Reload, Debug and more..."
+    usage: "/communityanalytics"
     aliases:
-      - "car"
+      - "ca"
+      - "community"
+      - "analytics"

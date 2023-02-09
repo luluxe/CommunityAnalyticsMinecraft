@@ -1,18 +1,17 @@
 package net.communityanalytics.spigot;
 
-import net.communityanalytics.common.utils.ILogger;
+import net.communityanalytics.common.interfaces.ILogger;
 
 public class SpigotLogger implements ILogger {
+    private final SpigotPlugin plugin;
 
-    private final AnalyticsPlugin plugin;
-
-    public SpigotLogger(AnalyticsPlugin plugin) {
+    public SpigotLogger(SpigotPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public void printDebug(String message) {
-        if (this.plugin.getManager().getConfig().isDebug()) {
+        if (SpigotPlugin.config().isDebug()) {
             this.plugin.getLogger().info(message);
         }
     }

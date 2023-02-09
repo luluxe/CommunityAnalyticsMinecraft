@@ -1,7 +1,6 @@
-package net.communityanalytics.common.utils;
+package net.communityanalytics.common.interfaces;
 
 public interface ILogger {
-
     void printDebug(String message);
 
     void printInfo(String message);

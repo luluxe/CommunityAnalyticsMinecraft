@@ -1,7 +1,7 @@
-package net.communityanalytics.spigot;
+package net.communityanalytics.spigot.configs;
 
-import net.communityanalytics.common.utils.ConfigLoader;
-import net.communityanalytics.common.utils.PlateformeConfig;
+import net.communityanalytics.common.interfaces.ConfigLoader;
+import net.communityanalytics.spigot.configs.SpigotConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SpigotConfigLoader implements ConfigLoader {
@@ -13,15 +13,13 @@ public class SpigotConfigLoader implements ConfigLoader {
     }
 
     @Override
-    public PlateformeConfig loadConfig() {
-
-        int platformId = yamlConfiguration.getInt("platform-id");
-        String platformToken = yamlConfiguration.getString("platform-token");
+    public SpigotConfig loadConfig() {
+        String platformApiToken = yamlConfiguration.getString("platform-api-token");
         boolean debug = yamlConfiguration.getBoolean("debug");
         int minimumSessionDuration = yamlConfiguration.getInt("minimum-session-duration");
         String serverName = yamlConfiguration.getString("server-name");
 
-        return new PlateformeConfig(platformId, platformToken, serverName, debug, minimumSessionDuration);
+        return new SpigotConfig(platformApiToken, serverName, debug, minimumSessionDuration);
     }
 
 }

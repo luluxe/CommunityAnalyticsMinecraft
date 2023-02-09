@@ -2,9 +2,8 @@
 # Track your community to growth
 # communityanalytics.net
 
-# Platform 
-platform-id: SERVER_ID
-platform-token: SERVER_TOKEN
+# Platform
+platform-api-token: SERVER_TOKEN
 
 # You can enable this (when testing) to get extra insights.
 debug: false

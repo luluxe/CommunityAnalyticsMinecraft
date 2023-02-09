@@ -1,24 +1,16 @@
-package net.communityanalytics.velocity;
+package net.communityanalytics.velocity.listeners;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
-import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
-import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
-import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
-import net.communityanalytics.common.SessionManager;
-import net.communityanalytics.common.utils.PlayerInfo;
-import org.slf4j.Logger;
+import net.communityanalytics.common.PlayerInfo;
+import net.communityanalytics.velocity.VelocityPlugin;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -26,28 +18,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-@Plugin(id = "communityanalytics", name = "CommunityAnalytics", version = "1.0.0")
-public class AnalyticsPlugin {
-
-    private final ChannelIdentifier channel = new LegacyChannelIdentifier(SessionManager.channelName);
+public class PlayerInfoListener {
     private final Map<UUID, PlayerInfo> playerInfos = new HashMap<>();
-    private final ProxyServer server;
 
-    @Inject
-    public AnalyticsPlugin(ProxyServer server, Logger logger) {
-        this.server = server;
-    }
-
-    @Subscribe
-    public void onProxyInitialization(ProxyInitializeEvent event) {
-        server.getChannelRegistrar().register(channel);
-    }
-
-    @Subscribe
-    public void onProxyShutdown(ProxyShutdownEvent event) {
-
-    }
-
+    /**
+     * Get the playerInfo
+     *
+     * @param event PostLoginEvent
+     */
     @Subscribe
     public void onLogin(PostLoginEvent event) {
         Player player = event.getPlayer();
@@ -59,16 +37,25 @@ public class AnalyticsPlugin {
         }
     }
 
+    /**
+     * Remove the playerInfo
+     *
+     * @param event DisconnectEvent
+     */
     @Subscribe
     public void onDisconnect(DisconnectEvent event) {
         Player player = event.getPlayer();
         this.playerInfos.remove(player.getUniqueId());
     }
 
+    /**
+     * Send the playerInfo to the server
+     *
+     * @param event PluginMessageEvent
+     */
     @Subscribe
     public void onMessage(PluginMessageEvent event) {
-
-        if (event.getIdentifier() != channel) {
+        if (event.getIdentifier() != VelocityPlugin.instance.getChannel()) {
             return;
         }
 
@@ -80,14 +67,13 @@ public class AnalyticsPlugin {
                 PlayerInfo playerInfo = this.playerInfos.get(uuid);
 
                 ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                out.writeUTF(playerInfo.getHost());
-                out.writeUTF(playerInfo.getIp());
+                out.writeUTF(playerInfo.getIpConnect());
+                out.writeUTF(playerInfo.getIpUser());
 
                 if (event.getSource() instanceof ServerConnection serverConnection) {
-                    serverConnection.sendPluginMessage(channel, out.toByteArray());
+                    serverConnection.sendPluginMessage(VelocityPlugin.instance.getChannel(), out.toByteArray());
                 }
             }
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
     }
 }
