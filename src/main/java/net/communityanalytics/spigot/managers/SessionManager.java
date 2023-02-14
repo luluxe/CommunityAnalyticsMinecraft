@@ -6,6 +6,7 @@ import net.communityanalytics.CommunityAnalytics;
 import net.communityanalytics.spigot.SpigotAPI;
 import net.communityanalytics.spigot.SpigotPlugin;
 import net.communityanalytics.spigot.api.APIRequest;
+import net.communityanalytics.spigot.api.ApiResponse;
 import net.communityanalytics.spigot.data.Session;
 
 import java.util.*;
@@ -81,7 +82,17 @@ public class SessionManager {
         APIRequest request = SpigotAPI.sessionStore(data);
 
         try {
-            request.sendRequest();
+            ApiResponse response = request.sendRequest();
+            if (response.getStatus() == 402) {
+                SpigotPlugin.logger().printError("Your subscription no longer allows you to receive new information. Please upgrade your subscription.");
+                return;
+            }
+            if (response.getStatus() != 200) {
+                SpigotPlugin.logger().printError("Can't auth to API: Check your token in config.yml");
+                return;
+            }
+
+            SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
         } catch (Exception e) {
             e.printStackTrace();
         }

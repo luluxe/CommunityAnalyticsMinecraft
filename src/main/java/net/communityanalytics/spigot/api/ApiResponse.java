@@ -11,6 +11,10 @@ public class ApiResponse {
         this.response = response;
     }
 
+    public boolean has(String arg) {
+        return JsonParser.parseString(response.body()).getAsJsonObject().has(arg);
+    }
+
     public String getStringArg(String arg) {
         return JsonParser.parseString(response.body()).getAsJsonObject().get(arg).getAsString();
     }

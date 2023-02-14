@@ -15,6 +15,7 @@ public class PlatformManager {
                 SpigotPlugin.logger().printError("Can't auth to API:");
                 SpigotPlugin.logger().printError("Check your token in config.yml");
                 error();
+                return;
             }
 
             success = true;
