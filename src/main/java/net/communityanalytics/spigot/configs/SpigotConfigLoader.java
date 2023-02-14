@@ -1,6 +1,7 @@
 package net.communityanalytics.spigot.configs;
 
 import net.communityanalytics.common.interfaces.ConfigLoader;
+import net.communityanalytics.spigot.SpigotPlugin;
 import net.communityanalytics.spigot.configs.SpigotConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -21,5 +22,4 @@ public class SpigotConfigLoader implements ConfigLoader {
 
         return new SpigotConfig(platformApiToken, serverName, debug, minimumSessionDuration);
     }
-
 }

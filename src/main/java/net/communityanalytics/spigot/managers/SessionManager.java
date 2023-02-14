@@ -1,10 +1,12 @@
-package net.communityanalytics.spigot.sessions;
+package net.communityanalytics.spigot.managers;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.communityanalytics.CommunityAnalytics;
+import net.communityanalytics.spigot.SpigotAPI;
 import net.communityanalytics.spigot.SpigotPlugin;
-import net.communityanalytics.spigot.api.MethodEnum;
-import net.communityanalytics.spigot.api.SpigotHttpRequest;
+import net.communityanalytics.spigot.api.APIRequest;
+import net.communityanalytics.spigot.data.Session;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -14,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 public class SessionManager {
     private ScheduledFuture<?> scheduledFuture = null;
-    private final String API_URL = "https://communityanalytics.net/api/v1/";
     private final List<Session> sessions = new ArrayList<Session>();
 
     public SessionManager() {
@@ -26,7 +27,7 @@ public class SessionManager {
             } else {
                 this.sendAPI();
             }
-        }, 1, 1, TimeUnit.MINUTES);
+        }, 1, CommunityAnalytics.SESSION_API_MINUTES, TimeUnit.MINUTES);
     }
 
     /**
@@ -50,8 +51,6 @@ public class SessionManager {
     }
 
     public void sendAPI() {
-        SpigotPlugin.logger().printDebug("Send sessions to API");
-
         JsonObject data = new JsonObject();
         JsonArray sessions = new JsonArray();
 
@@ -71,14 +70,15 @@ public class SessionManager {
         }
 
         if (sessions.isEmpty()) {
-            SpigotPlugin.logger().printDebug("No session to send");
+            SpigotPlugin.logger().printDebug("No session to send to API");
             return;
         }
         data.addProperty("where", SpigotPlugin.config().getServerName());
         data.add("sessions", sessions);
 
         // Send request
-        SpigotHttpRequest request = new SpigotHttpRequest("v1/sessions", MethodEnum.POST, data);
+        SpigotPlugin.logger().printDebug("Sending " + sessions.size() + " sessions to API");
+        APIRequest request = SpigotAPI.sessionStore(data);
 
         try {
             request.sendRequest();

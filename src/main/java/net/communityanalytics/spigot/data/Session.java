@@ -1,4 +1,4 @@
-package net.communityanalytics.spigot.sessions;
+package net.communityanalytics.spigot.data;
 
 import com.google.gson.JsonObject;
 import net.communityanalytics.spigot.SpigotPlugin;

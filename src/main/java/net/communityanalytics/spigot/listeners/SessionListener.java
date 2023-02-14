@@ -5,7 +5,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import net.communityanalytics.CommunityAnalytics;
 import net.communityanalytics.spigot.SpigotPlugin;
-import net.communityanalytics.spigot.sessions.Session;
+import net.communityanalytics.spigot.data.Session;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
