@@ -11,16 +11,16 @@ public class Session {
 
     private final UUID uuid;
     private final String name;
+    private final LocalDateTime join_at;
     private String ip_connect;
     private String ip_user;
-    private final LocalDateTime join_at;
     private LocalDateTime quit_at = null;
 
     /**
      * @param uuid       Player's UUID
      * @param name       Player's name
      * @param ip_connect Player's ip used for join the server
-     * @param ip_user  Player's ip
+     * @param ip_user    Player's ip
      */
     public Session(UUID uuid, String name, String ip_connect, String ip_user) {
         super();

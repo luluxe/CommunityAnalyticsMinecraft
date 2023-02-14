@@ -14,13 +14,20 @@ import org.slf4j.Logger;
 
 @Plugin(id = "communityanalytics", name = "CommunityAnalytics", version = "1.0.0")
 public class VelocityPlugin {
+    public static VelocityPlugin instance;
     private final ChannelIdentifier channel = new LegacyChannelIdentifier(CommunityAnalytics.CHANNEL_INFO);
     private ProxyServer server = null;
     private Logger logger = null;
 
-    public static VelocityPlugin instance;
     public VelocityPlugin() {
         instance = this;
+    }
+
+    @Inject
+    public VelocityPlugin(ProxyServer server, Logger logger) {
+        // Register velocity things
+        this.server = server;
+        this.logger = logger;
     }
 
     public ChannelIdentifier getChannel() {
@@ -31,17 +38,10 @@ public class VelocityPlugin {
         return server;
     }
 
-    public Logger getLogger() {
-        return logger;
-    }
-
     // Events
 
-    @Inject
-    public VelocityPlugin(ProxyServer server, Logger logger) {
-        // Register velocity things
-        this.server = server;
-        this.logger = logger;
+    public Logger getLogger() {
+        return logger;
     }
 
     @Subscribe

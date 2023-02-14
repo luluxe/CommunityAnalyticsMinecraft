@@ -74,6 +74,7 @@ public class PlayerInfoListener {
                     serverConnection.sendPluginMessage(VelocityPlugin.instance.getChannel(), out.toByteArray());
                 }
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 }

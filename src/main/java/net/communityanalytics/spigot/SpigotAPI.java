@@ -1,8 +1,8 @@
 package net.communityanalytics.spigot;
 
 import com.google.gson.JsonObject;
-import net.communityanalytics.spigot.api.MethodEnum;
 import net.communityanalytics.spigot.api.APIRequest;
+import net.communityanalytics.spigot.api.MethodEnum;
 
 public class SpigotAPI {
     public static APIRequest sessionStore(JsonObject data) {

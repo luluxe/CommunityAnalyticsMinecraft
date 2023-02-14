@@ -6,6 +6,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 public class BungeePlugin extends Plugin {
     public static BungeePlugin instance;
+
     public BungeePlugin() {
         instance = this;
     }

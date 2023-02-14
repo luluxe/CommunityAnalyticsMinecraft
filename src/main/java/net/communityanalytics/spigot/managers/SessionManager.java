@@ -15,8 +15,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class SessionManager {
-    private ScheduledFuture<?> scheduledFuture = null;
     private final List<Session> sessions = new ArrayList<Session>();
+    private ScheduledFuture<?> scheduledFuture = null;
 
     public SessionManager() {
         SpigotPlugin.logger().printDebug("Session manager started");
@@ -82,7 +82,7 @@ public class SessionManager {
 
         try {
             request.sendRequest();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

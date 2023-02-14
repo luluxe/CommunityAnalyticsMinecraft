@@ -78,7 +78,7 @@ public class SessionListener implements Listener, PluginMessageListener {
      * Get ip_connect and ip_user from proxy
      *
      * @param channel String
-     * @param player Player
+     * @param player  Player
      * @param message byte[]
      */
     @Override

@@ -15,22 +15,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpigotPlugin extends JavaPlugin {
     public static SpigotPlugin instance;
-
-    public SpigotPlugin() {
-        instance = this;
-    }
-
     private SessionManager manager = null;
     private ILogger logger = null;
     private SpigotConfig config = null;
     private PlatformManager platformManager = null;
 
+    public SpigotPlugin() {
+        instance = this;
+    }
+
     public static SessionManager manager() {
         return instance.manager;
     }
+
     public static ILogger logger() {
         return instance.logger;
     }
+
     public static SpigotConfig config() {
         return instance.config;
     }

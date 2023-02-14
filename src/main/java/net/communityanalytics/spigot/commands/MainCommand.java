@@ -20,10 +20,10 @@ public class MainCommand implements CommandExecutor {
         // TODO class for each command
 
         // Main command
-        if(args.length == 0) {
+        if (args.length == 0) {
             try {
                 ApiResponse response = SpigotAPI.platformShow().sendRequest();
-                if(response.getStatus() == 403) {
+                if (response.getStatus() == 403) {
                     sender.sendMessage("§f(§b§lCommunityAnalytics§f) §cCan't auth to API:");
                     sender.sendMessage("§e» §cCheck your token in config.yml");
                     return true;

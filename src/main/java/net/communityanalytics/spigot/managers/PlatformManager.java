@@ -11,7 +11,7 @@ public class PlatformManager {
     public void getPlatformInfo() {
         try {
             ApiResponse response = SpigotAPI.platformShow().sendRequest();
-            if(response.getStatus() != 200) {
+            if (response.getStatus() != 200) {
                 SpigotPlugin.logger().printError("Can't auth to API:");
                 SpigotPlugin.logger().printError("Check your token in config.yml");
                 error();
@@ -21,10 +21,10 @@ public class PlatformManager {
             version = response.getStringArg("plugin_version");
 
             SpigotPlugin.logger().printInfo("Connected to CommunityAnalytics API");
-            if(isOutdated()) {
+            if (isOutdated()) {
                 SpigotPlugin.logger().printError("Your plugin is outdated! (Last version " + version + ")");
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             error();
         }
