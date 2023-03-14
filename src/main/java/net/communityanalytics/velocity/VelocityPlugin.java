@@ -10,6 +10,7 @@ import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import net.communityanalytics.CommunityAnalytics;
 import net.communityanalytics.velocity.listeners.PlayerInfoListener;
+import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
 
 @Plugin(id = "communityanalytics", name = "CommunityAnalytics", version = "1.0.0")
@@ -18,16 +19,14 @@ public class VelocityPlugin {
     private final ChannelIdentifier channel = new LegacyChannelIdentifier(CommunityAnalytics.CHANNEL_INFO);
     private ProxyServer server = null;
     private Logger logger = null;
-
-    public VelocityPlugin() {
-        instance = this;
-    }
+    private final Metrics.Factory metricsFactory;
 
     @Inject
-    public VelocityPlugin(ProxyServer server, Logger logger) {
-        // Register velocity things
+    public VelocityPlugin(ProxyServer server, Logger logger, Metrics.Factory metricsFactory) {
+        instance = this;
         this.server = server;
         this.logger = logger;
+        this.metricsFactory = metricsFactory;
     }
 
     public ChannelIdentifier getChannel() {
@@ -51,6 +50,9 @@ public class VelocityPlugin {
 
         // channels
         server.getChannelRegistrar().register(channel);
+
+        int pluginId = 17953; // <-- Replace with the id of your plugin!
+        Metrics metrics = metricsFactory.make(this, pluginId);
     }
 
     @Subscribe

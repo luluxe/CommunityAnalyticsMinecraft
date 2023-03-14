@@ -10,6 +10,7 @@ import net.communityanalytics.spigot.listeners.SessionListener;
 import net.communityanalytics.spigot.listeners.UpdateListener;
 import net.communityanalytics.spigot.managers.PlatformManager;
 import net.communityanalytics.spigot.managers.SessionManager;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -63,6 +64,11 @@ public class SpigotPlugin extends JavaPlugin {
         manager = new SessionManager();
         platformManager = new PlatformManager();
         platformManager.getPlatformInfo();
+
+        // All you have to do is adding the following two lines in your onEnable method.
+        // You can find the plugin ids of your plugins on the page https://bstats.org/what-is-my-plugin-id
+        int pluginId = 17845; // <-- Replace with the id of your plugin!
+        Metrics metrics = new Metrics(this, pluginId);
     }
 
     @Override
