@@ -70,7 +70,8 @@ public class PlayerInfoListener {
                 out.writeUTF(playerInfo.getIpConnect());
                 out.writeUTF(playerInfo.getIpUser());
 
-                if (event.getSource() instanceof ServerConnection serverConnection) {
+                if (event.getSource() instanceof ServerConnection) {
+                    ServerConnection serverConnection = (ServerConnection) event.getSource();
                     serverConnection.sendPluginMessage(VelocityPlugin.instance.getChannel(), out.toByteArray());
                 }
             }
