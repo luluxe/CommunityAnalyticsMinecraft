@@ -1,6 +1,7 @@
 package net.communityanalytics.spigot;
 
 import net.communityanalytics.CommunityAnalytics;
+import net.communityanalytics.common.SentryManager;
 import net.communityanalytics.common.interfaces.ConfigLoader;
 import net.communityanalytics.common.interfaces.ILogger;
 import net.communityanalytics.spigot.commands.MainCommand;
@@ -22,6 +23,8 @@ public class SpigotPlugin extends JavaPlugin {
     private PlatformManager platformManager = null;
 
     public SpigotPlugin() {
+        SentryManager.init();
+
         instance = this;
     }
 

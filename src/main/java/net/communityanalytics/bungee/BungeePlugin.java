@@ -2,6 +2,7 @@ package net.communityanalytics.bungee;
 
 import net.communityanalytics.CommunityAnalytics;
 import net.communityanalytics.bungee.listeners.PlayerInfoListener;
+import net.communityanalytics.common.SentryManager;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.bstats.bungeecord.Metrics;
 
@@ -9,6 +10,8 @@ public class BungeePlugin extends Plugin {
     public static BungeePlugin instance;
 
     public BungeePlugin() {
+        SentryManager.init();
+
         instance = this;
     }
 
