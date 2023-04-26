@@ -29,7 +29,7 @@ public class SessionManager {
             } else {
                 this.sendAPI();
             }
-        }, 1, CommunityAnalytics.SESSION_API_MINUTES, TimeUnit.MINUTES);
+        }, 1, CommunityAnalytics.SESSION_API_SECONDS, TimeUnit.SECONDS);
     }
 
     /**
@@ -72,6 +72,7 @@ public class SessionManager {
         }
 
         if (sessions.isEmpty()) {
+            // No sessions to send
             SpigotPlugin.logger().printDebug("No session to send to API");
             return;
         }
