@@ -17,6 +17,9 @@ public class SpigotConfigLoader implements ConfigLoader {
         boolean debug = yamlConfiguration.getBoolean("debug");
         int minimumSessionDuration = yamlConfiguration.getInt("minimum-session-duration");
         String serverName = yamlConfiguration.getString("server-name");
+        if(serverName == null) {
+            serverName = yamlConfiguration.getString("server-id");
+        }
 
         return new SpigotConfig(platformApiToken, serverName, debug, minimumSessionDuration);
     }

@@ -14,4 +14,4 @@ debug: false
 minimum-session-duration: 0
 
 # Server name is used to store player's sessions
-server-name: 'skyblock'
+server-id: 'skyblock'
