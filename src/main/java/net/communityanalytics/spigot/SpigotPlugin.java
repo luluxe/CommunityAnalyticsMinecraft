@@ -12,6 +12,7 @@ import net.communityanalytics.spigot.listeners.UpdateListener;
 import net.communityanalytics.spigot.managers.PlatformManager;
 import net.communityanalytics.spigot.managers.SessionManager;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -72,6 +73,8 @@ public class SpigotPlugin extends JavaPlugin {
         // You can find the plugin ids of your plugins on the page https://bstats.org/what-is-my-plugin-id
         int pluginId = 17845; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
+        metrics.addCustomChart(new SimplePie("connected_to_api", ()
+                -> platformManager.isSuccess() ? "Yes" : "No"));
     }
 
     @Override
