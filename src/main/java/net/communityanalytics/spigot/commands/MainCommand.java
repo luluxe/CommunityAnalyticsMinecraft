@@ -1,6 +1,5 @@
 package net.communityanalytics.spigot.commands;
 
-import net.communityanalytics.common.SentryManager;
 import net.communityanalytics.spigot.SpigotAPI;
 import net.communityanalytics.spigot.SpigotPlugin;
 import net.communityanalytics.spigot.api.ApiResponse;
@@ -38,7 +37,6 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage("§e» §7Platform: §b" + response.getStringArg("platform_name")); // Platform
                 sender.sendMessage("§e» §a/community reload §7(Reload configuration)");
             } catch (Exception e) {
-                SentryManager.capture(e);
                 e.printStackTrace();
                 sender.sendMessage("§cError: " + e.getMessage());
             }

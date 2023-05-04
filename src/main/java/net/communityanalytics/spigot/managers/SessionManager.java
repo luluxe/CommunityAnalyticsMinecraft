@@ -3,7 +3,6 @@ package net.communityanalytics.spigot.managers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.communityanalytics.CommunityAnalytics;
-import net.communityanalytics.common.SentryManager;
 import net.communityanalytics.spigot.SpigotAPI;
 import net.communityanalytics.spigot.SpigotPlugin;
 import net.communityanalytics.spigot.api.APIRequest;
@@ -96,7 +95,6 @@ public class SessionManager {
 
             SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
         } catch (Exception e) {
-            SentryManager.capture(e);
             e.printStackTrace();
         }
     }

@@ -9,7 +9,6 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import net.communityanalytics.CommunityAnalytics;
-import net.communityanalytics.common.SentryManager;
 import net.communityanalytics.velocity.listeners.PlayerInfoListener;
 import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
@@ -24,8 +23,6 @@ public class VelocityPlugin {
 
     @Inject
     public VelocityPlugin(ProxyServer server, Logger logger, Metrics.Factory metricsFactory) {
-        SentryManager.init();
-
         instance = this;
         this.server = server;
         this.logger = logger;
