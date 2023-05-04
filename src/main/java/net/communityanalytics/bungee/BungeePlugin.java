@@ -14,6 +14,9 @@ public class BungeePlugin extends Plugin {
 
     @Override
     public void onEnable() {
+        getLogger().info("Make your minecraft server grow, with data!");
+        getLogger().info("=> https://communityanalytics.net/");
+
         // listeners
         getProxy().getPluginManager().registerListener(this, new PlayerInfoListener());
 

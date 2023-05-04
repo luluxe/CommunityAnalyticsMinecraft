@@ -45,6 +45,8 @@ public class SpigotPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         logger = new SpigotLogger(this);
+        logger.printInfo("Make your minecraft server grow, with data!");
+        logger.printInfo("=> https://communityanalytics.net/");
 
         // listeners
         this.getServer().getPluginManager().registerEvents(new SessionListener(), this);

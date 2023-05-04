@@ -75,7 +75,7 @@ public class SessionManager {
             SpigotPlugin.logger().printDebug("No session to send to API");
             return;
         }
-        data.addProperty("where", SpigotPlugin.config().getServerName());
+        data.addProperty("where", SpigotPlugin.config().getServerId());
         data.add("sessions", sessions);
 
         // Send request

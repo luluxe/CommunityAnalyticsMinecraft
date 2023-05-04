@@ -45,6 +45,9 @@ public class VelocityPlugin {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+        getLogger().info("Make your minecraft server grow, with data!");
+        getLogger().info("=> https://communityanalytics.net/");
+
         // listeners
         server.getEventManager().register(this, new PlayerInfoListener());
 
