@@ -23,7 +23,7 @@ public class SessionManager {
             if (this.scheduledFuture != null && SpigotPlugin.logger() != null && !SpigotPlugin.logger().isPluginEnable()) {
                 this.scheduledFuture.cancel();
             } else {
-                this.sendAPI();
+                Bukkit.getScheduler().runTaskAsynchronously(SpigotPlugin.instance, this::sendAPI);
             }
         }, 20 * 30, CommunityAnalytics.SESSION_API_SECONDS * 20);
     }
