@@ -13,7 +13,7 @@ import net.communityanalytics.velocity.listeners.PlayerInfoListener;
 import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
 
-@Plugin(id = "communityanalytics", name = "CommunityAnalytics", version = "1.0.2")
+@Plugin(id = "communityanalytics", name = "CommunityAnalytics", version = "1.0.3")
 public class VelocityPlugin {
     public static VelocityPlugin instance;
     private final ChannelIdentifier channel = new LegacyChannelIdentifier(CommunityAnalytics.CHANNEL_INFO);

@@ -2,7 +2,7 @@ name: CommunityAnalytics
 author: FNetwork
 main: net.communityanalytics.spigot.SpigotPlugin
 website: https://communityanalytics.net
-version: 1.0.2
+version: 1.0.3
 api-version: 1.13
 commands:
   communityanalytics:
