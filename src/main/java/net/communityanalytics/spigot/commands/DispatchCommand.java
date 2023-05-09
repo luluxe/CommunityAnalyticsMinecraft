@@ -24,6 +24,7 @@ public class DispatchCommand implements CommandExecutor {
         }
 
         String first_arg = args[0];
+        // TODO remove argument pas utile
         switch (first_arg) {
             case "reload":
                 new ReloadCommand("reload", args, sender).execute(plugin);
@@ -35,7 +36,6 @@ public class DispatchCommand implements CommandExecutor {
             case "help":
                 new HelpCommand("help", args, sender).execute(plugin);
                 break;
-
             default:
                 sender.sendMessage("§f(§b§lCommunityAnalytics§f) §cUnknown command ! type /communityanalytics help for more informations");
                 break;
