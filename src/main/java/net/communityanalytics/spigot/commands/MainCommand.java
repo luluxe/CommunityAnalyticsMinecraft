@@ -5,8 +5,10 @@ import net.communityanalytics.spigot.SpigotPlugin;
 import net.communityanalytics.spigot.api.ApiResponse;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 public class MainCommand extends Command {
-    public MainCommand(String name, String[] args, CommandSender sender) {
+    public MainCommand(String name, List<String> args, CommandSender sender) {
         super(name, args, sender);
     }
 

@@ -4,8 +4,10 @@ import net.communityanalytics.spigot.SpigotPlugin;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class HelpCommand extends Command {
-    public HelpCommand(String name, String[] args, @NotNull CommandSender sender) {
+    public HelpCommand(String name, List<String> args, @NotNull CommandSender sender) {
         super(name, args, sender);
 
     }
