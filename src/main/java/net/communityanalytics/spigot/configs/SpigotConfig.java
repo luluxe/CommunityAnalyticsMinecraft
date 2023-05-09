@@ -1,25 +1,32 @@
 package net.communityanalytics.spigot.configs;
 
+import net.communityanalytics.spigot.SpigotPlugin;
+
 public class SpigotConfig {
 
     private final String platform_api_token;
-    private final String server_name;
+    private final String server_id;
     private final boolean debug;
-    private final int minimums_session_duration;
+    private final int minimum_session_duration;
 
-    public SpigotConfig(String platformApiToken, String serverName, boolean debug, int minimumSessionDuration) {
-        this.platform_api_token = platformApiToken;
-        this.server_name = serverName;
+    public SpigotConfig(String platform_api_token, String server_id, boolean debug, int minimum_session_duration) {
+        this.platform_api_token = platform_api_token;
+        this.server_id = server_id;
         this.debug = debug;
-        this.minimums_session_duration = minimumSessionDuration;
+        this.minimum_session_duration = minimum_session_duration;
+
+        SpigotPlugin.logger().printInfo("Loaded configurations:");
+        SpigotPlugin.logger().printInfo("=> server_id: " + this.server_id);
+        SpigotPlugin.logger().printInfo("=> debug: " + this.debug);
+        SpigotPlugin.logger().printInfo("=> minimum_session_duration: " + this.minimum_session_duration);
     }
 
     public String getPlatformApiToken() {
         return platform_api_token;
     }
 
-    public String getServerName() {
-        return server_name;
+    public String getServerId() {
+        return server_id;
     }
 
     public boolean isDebug() {
@@ -27,6 +34,6 @@ public class SpigotConfig {
     }
 
     public int getMinimumsSessionDuration() {
-        return minimums_session_duration;
+        return minimum_session_duration;
     }
 }

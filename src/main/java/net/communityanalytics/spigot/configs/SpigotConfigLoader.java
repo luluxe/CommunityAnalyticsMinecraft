@@ -13,14 +13,14 @@ public class SpigotConfigLoader implements ConfigLoader {
 
     @Override
     public SpigotConfig loadConfig() {
-        String platformApiToken = yamlConfiguration.getString("platform-api-token");
+        String platform_api_token = yamlConfiguration.getString("platform-api-token");
         boolean debug = yamlConfiguration.getBoolean("debug");
-        int minimumSessionDuration = yamlConfiguration.getInt("minimum-session-duration");
-        String serverName = yamlConfiguration.getString("server-name");
-        if(serverName == null) {
-            serverName = yamlConfiguration.getString("server-id");
+        int minimum_session_duration = yamlConfiguration.getInt("minimum-session-duration");
+        String server_id = yamlConfiguration.getString("server-name");
+        if(server_id == null) {
+            server_id = yamlConfiguration.getString("server-id");
         }
 
-        return new SpigotConfig(platformApiToken, serverName, debug, minimumSessionDuration);
+        return new SpigotConfig(platform_api_token, server_id, debug, minimum_session_duration);
     }
 }

@@ -3,33 +3,29 @@ package net.communityanalytics.spigot.managers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.communityanalytics.CommunityAnalytics;
-import net.communityanalytics.common.SentryManager;
 import net.communityanalytics.spigot.SpigotAPI;
 import net.communityanalytics.spigot.SpigotPlugin;
 import net.communityanalytics.spigot.api.APIRequest;
 import net.communityanalytics.spigot.api.ApiResponse;
 import net.communityanalytics.spigot.data.Session;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class SessionManager {
     private final List<Session> sessions = new ArrayList<Session>();
-    private ScheduledFuture<?> scheduledFuture = null;
+    private BukkitTask scheduledFuture = null;
 
     public SessionManager() {
         SpigotPlugin.logger().printDebug("Session manager started");
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-        this.scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(() -> {
-            if (SpigotPlugin.logger() != null && !SpigotPlugin.logger().isPluginEnable() && this.scheduledFuture != null) {
-                this.scheduledFuture.cancel(true);
+        scheduledFuture = Bukkit.getScheduler().runTaskTimer(SpigotPlugin.instance, () -> {
+            if (this.scheduledFuture != null && SpigotPlugin.logger() != null && !SpigotPlugin.logger().isPluginEnable()) {
+                this.scheduledFuture.cancel();
             } else {
-                this.sendAPI();
+                Bukkit.getScheduler().runTaskAsynchronously(SpigotPlugin.instance, this::sendAPI);
             }
-        }, 1, CommunityAnalytics.SESSION_API_SECONDS, TimeUnit.SECONDS);
+        }, 20 * 30, CommunityAnalytics.SESSION_API_SECONDS * 20);
     }
 
     /**
@@ -71,12 +67,12 @@ public class SessionManager {
             }
         }
 
-        if (sessions.isEmpty()) {
+        if (sessions.size() == 0) {
             // No sessions to send
             SpigotPlugin.logger().printDebug("No session to send to API");
             return;
         }
-        data.addProperty("where", SpigotPlugin.config().getServerName());
+        data.addProperty("where", SpigotPlugin.config().getServerId());
         data.add("sessions", sessions);
 
         // Send request
@@ -96,7 +92,6 @@ public class SessionManager {
 
             SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
         } catch (Exception e) {
-            SentryManager.capture(e);
             e.printStackTrace();
         }
     }

@@ -10,7 +10,6 @@ import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import net.communityanalytics.common.PlayerInfo;
-import net.communityanalytics.common.SentryManager;
 import net.communityanalytics.velocity.VelocityPlugin;
 
 import java.net.InetSocketAddress;
@@ -77,7 +76,7 @@ public class PlayerInfoListener {
                 }
             }
         } catch (Exception e) {
-            SentryManager.capture(e);
+            e.printStackTrace();
         }
     }
 }

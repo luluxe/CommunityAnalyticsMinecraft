@@ -9,12 +9,11 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import net.communityanalytics.CommunityAnalytics;
-import net.communityanalytics.common.SentryManager;
 import net.communityanalytics.velocity.listeners.PlayerInfoListener;
 import org.bstats.velocity.Metrics;
 import org.slf4j.Logger;
 
-@Plugin(id = "communityanalytics", name = "CommunityAnalytics", version = "1.0.2")
+@Plugin(id = "communityanalytics", name = "CommunityAnalytics", version = "1.0.3")
 public class VelocityPlugin {
     public static VelocityPlugin instance;
     private final ChannelIdentifier channel = new LegacyChannelIdentifier(CommunityAnalytics.CHANNEL_INFO);
@@ -24,8 +23,6 @@ public class VelocityPlugin {
 
     @Inject
     public VelocityPlugin(ProxyServer server, Logger logger, Metrics.Factory metricsFactory) {
-        SentryManager.init();
-
         instance = this;
         this.server = server;
         this.logger = logger;
@@ -48,6 +45,9 @@ public class VelocityPlugin {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+        getLogger().info("Make your minecraft server grow, with data!");
+        getLogger().info("=> https://communityanalytics.net/");
+
         // listeners
         server.getEventManager().register(this, new PlayerInfoListener());
 

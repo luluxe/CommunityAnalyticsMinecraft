@@ -1,13 +1,12 @@
 package net.communityanalytics.spigot.managers;
 
-import net.communityanalytics.common.SentryManager;
 import net.communityanalytics.spigot.SpigotAPI;
 import net.communityanalytics.spigot.SpigotPlugin;
 import net.communityanalytics.spigot.api.ApiResponse;
 
 public class PlatformManager {
     public boolean success = false;
-    public String version = "1.0.2";
+    public String version = "1.0.3";
 
     public void getPlatformInfo() {
         try {
@@ -27,7 +26,6 @@ public class PlatformManager {
                 SpigotPlugin.logger().printError("Your plugin is outdated! (Last version " + version + ")");
             }
         } catch (Exception e) {
-            SentryManager.capture(e);
             e.printStackTrace();
             error();
         }

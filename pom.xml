@@ -4,7 +4,7 @@
 
     <groupId>net</groupId>
     <artifactId>communityanalytics</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
 
     <name>communityanalytics</name>
@@ -71,11 +71,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.14</version>
-        </dependency>
-        <dependency>
-            <groupId>io.sentry</groupId>
-            <artifactId>sentry</artifactId>
-            <version>6.17.0</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
