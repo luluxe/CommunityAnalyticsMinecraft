@@ -4,7 +4,7 @@ import net.communityanalytics.CommunityAnalytics;
 import net.communityanalytics.common.SentryManager;
 import net.communityanalytics.common.interfaces.ConfigLoader;
 import net.communityanalytics.common.interfaces.ILogger;
-import net.communityanalytics.spigot.commands.MainCommand;
+import net.communityanalytics.spigot.commands.DispatchCommand;
 import net.communityanalytics.spigot.configs.SpigotConfig;
 import net.communityanalytics.spigot.configs.SpigotConfigLoader;
 import net.communityanalytics.spigot.listeners.SessionListener;
@@ -58,7 +58,7 @@ public class SpigotPlugin extends JavaPlugin {
         this.loadConfiguration();
 
         // commands
-        this.getCommand("communityanalytics").setExecutor(new MainCommand(this));
+        this.getCommand("communityanalytics").setExecutor(new DispatchCommand(this));
 
         // channels
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, CommunityAnalytics.CHANNEL_INFO);

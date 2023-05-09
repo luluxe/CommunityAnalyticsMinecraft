@@ -9,8 +9,9 @@ commands:
     permission: "communityanalytics.admin"
     permission-message: "You don't have permission for this command."
     description: "Reload, Debug and more..."
-    usage: "/communityanalytics"
+    usage: "/communityanalytics <reload|setup> "
     aliases:
       - "ca"
       - "community"
       - "analytics"
+
