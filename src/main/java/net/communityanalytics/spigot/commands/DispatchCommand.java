@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DispatchCommand implements CommandExecutor {
-
     private final SpigotPlugin plugin;
 
     public DispatchCommand(SpigotPlugin plugin) {
@@ -34,7 +33,6 @@ public class DispatchCommand implements CommandExecutor {
                 break;
             case "setup":
                 new SetupCommand("setup", getArgs(args,1), sender).execute(plugin);
-                main_command.execute(plugin);
                 break;
             case "help":
                 new HelpCommand("help", getArgs(args,1), sender).execute(plugin);
