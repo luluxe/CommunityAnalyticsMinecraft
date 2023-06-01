@@ -6,7 +6,7 @@ import net.communityanalytics.spigot.api.ApiResponse;
 
 public class PlatformManager {
     public boolean success = false;
-    public String version = "1.0.4";
+    public String version = "1.0.5";
 
     public void getPlatformInfo() {
         try {

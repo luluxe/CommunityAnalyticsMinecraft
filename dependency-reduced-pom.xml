@@ -4,7 +4,7 @@
   <groupId>net</groupId>
   <artifactId>communityanalytics</artifactId>
   <name>communityanalytics</name>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>
