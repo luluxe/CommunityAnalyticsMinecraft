@@ -14,7 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.*;
 
 public class SessionManager {
-    private final List<Session> sessions = new ArrayList<Session>();
+    private final List<Session> sessions = new ArrayList<>();
     private BukkitTask scheduledFuture = null;
 
     public SessionManager() {
@@ -37,6 +37,17 @@ public class SessionManager {
      */
     public Optional<Session> find(UUID uuid) {
         return this.sessions.stream().filter(session -> session.getUuid().equals(uuid)).findFirst();
+    }
+
+    /**
+     * Recovers a session based on a player name, if no session is found then the
+     * optional will be empty
+     *
+     * @param name User's name
+     * @return Optional<Session> Optional that can contain the session
+     */
+    public Optional<Session> find(String name) {
+        return this.sessions.stream().filter(session -> session.getName().equals(name)).findFirst();
     }
 
     /**
