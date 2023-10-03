@@ -1,6 +1,7 @@
 package net.communityanalytics.spigot.data;
 
 import com.google.gson.JsonObject;
+import net.communityanalytics.common.RegexUtil;
 import net.communityanalytics.spigot.SpigotPlugin;
 
 import java.time.LocalDateTime;
@@ -79,14 +80,19 @@ public class Session {
 
     /**
      * Check if a session is valid
-     * For a session to be valid, the number of seconds between the start
-     * of the session and the end of the session must be greater than
+     * For a session to be valid:
+     * - The ip_connect need to be a valid domain name
+     * - The number of seconds between the start of the session and the end of the session must be greater than
      * the minimum session time configured in the config.yml file.
-     * We will check first if the session is finished.
      *
      * @return boolean
      */
     public boolean isValid() {
+        if (!RegexUtil.isDomain(this.ip_connect)) {
+            SpigotPlugin.logger().printError("The ip_connect is not a valid domain name: " + this.ip_connect);
+            SpigotPlugin.logger().printError("Contact CommunityAnalytics on Discord, if you can't solve this problem.");
+            return false;
+        }
         return ChronoUnit.SECONDS.between(this.join_at, this.quit_at) >= SpigotPlugin.config().getMinimumsSessionDuration();
     }
 
