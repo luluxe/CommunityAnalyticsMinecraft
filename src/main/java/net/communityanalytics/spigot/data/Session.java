@@ -1,21 +1,19 @@
 package net.communityanalytics.spigot.data;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.communityanalytics.spigot.SpigotPlugin;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.UUID;
 
 public class Session {
 
     private final UUID uuid;
     private final String name;
+    private final LocalDateTime join_at;
     private String ip_connect;
     private String ip_user;
-    private final List<Action> actions;
-    private final LocalDateTime join_at;
     private LocalDateTime quit_at = null;
 
     /**
@@ -31,17 +29,12 @@ public class Session {
         this.ip_connect = ip_connect;
         this.ip_user = ip_user;
         this.join_at = LocalDateTime.now();
-        this.actions = new ArrayList<>();
     }
-    // Getters
 
     public UUID getUuid() {
         return uuid;
     }
 
-    public String getName() {
-        return name;
-    }
     // Use when proxy send player info
 
     public void setIp_connect(String ip_connect) {
@@ -52,16 +45,6 @@ public class Session {
         this.ip_user = ip_user;
     }
 
-    // Actions
-
-    /**
-     * Add an action to the session
-     *
-     * @param action Action
-     */
-    public void addAction(Action action) {
-        this.actions.add(action);
-    }
     /**
      * Check if a session is finish, for a session to be finished the end date must not be null
      *
@@ -84,15 +67,6 @@ public class Session {
         session.addProperty("ip_user", this.ip_user);
         session.addProperty("join_at", this.join_at.toString());
         session.addProperty("quit_at", this.quit_at.toString());
-
-        JsonArray actions = new JsonArray();
-        this.actions.forEach(action -> {
-            JsonObject actionObject = new JsonObject();
-            actionObject.addProperty("name", action.getName());
-            actionObject.addProperty("date", action.getDate().toString());
-            actions.add(actionObject);
-        });
-        session.add("actions", actions);
         return session;
     }
 
@@ -125,7 +99,6 @@ public class Session {
                 ", ipPlayer='" + ip_user + '\'' +
                 ", firstDate=" + join_at +
                 ", endDate=" + quit_at +
-                ", actions=" + actions +
                 '}';
     }
 }

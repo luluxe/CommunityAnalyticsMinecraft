@@ -37,9 +37,6 @@ public class DispatchCommand implements CommandExecutor {
             case "help":
                 new HelpCommand("help", getArgs(args,1), sender).execute(plugin);
                 break;
-            case "action":
-                new ActionCommand("action", getArgs(args,1), sender).execute(plugin);
-                break;
             default:
                 sender.sendMessage("§f(§b§lCommunityAnalytics§f) §cUnknown command ! type /communityanalytics help for more informations");
                 break;

@@ -12,7 +12,7 @@ public class FileUtil {
      * @param path_name String
      * @param line_to_replace String
      * @param replace_with String
-     * @throws IOException IOException
+     * @throws IOException
      */
     public static void replace(String path_name, String line_to_replace, String replace_with) throws IOException {
         File file = new File(path_name);
