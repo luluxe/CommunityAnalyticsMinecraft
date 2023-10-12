@@ -89,9 +89,16 @@ public class Session {
      */
     public boolean isValid() {
         if (!RegexUtil.isDomain(this.ip_connect)) {
-            SpigotPlugin.logger().printError("The ip_connect is not a valid domain name: " + this.ip_connect);
-            SpigotPlugin.logger().printError("Contact CommunityAnalytics on Discord, if you can't solve this problem.");
-            return false;
+            String ip = RegexUtil.extractIp(this.ip_connect);
+            if(ip == null) {
+                // Try to fix it
+                SpigotPlugin.logger().printError("The ip_connect is not a valid domain name: " + this.ip_connect);
+                SpigotPlugin.logger().printError("Contact CommunityAnalytics on Discord, if you can't solve this problem.");
+                return false;
+            }
+
+            // pe.zedeztsmp.fun123.246.47.444110de2f1a3c47ab Bedrock Error
+            this.ip_connect = this.ip_connect.split(ip)[0];
         }
         return ChronoUnit.SECONDS.between(this.join_at, this.quit_at) >= SpigotPlugin.config().getMinimumsSessionDuration();
     }
