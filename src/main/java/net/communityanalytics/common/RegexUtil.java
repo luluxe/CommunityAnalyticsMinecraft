@@ -24,9 +24,16 @@ public class RegexUtil {
      * @return String
      */
     public static String extractIp(String message) {
+        // Pattern 1
         Pattern pattern = Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
         Matcher matcher = pattern.matcher(message);
+        if (matcher.find()) {
+            return matcher.group();
+        }
 
+        // Pattern 2
+        pattern = Pattern.compile("\\b([a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6})\\b");
+        matcher = pattern.matcher(message);
         if (matcher.find()) {
             return matcher.group();
         }

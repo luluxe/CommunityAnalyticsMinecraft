@@ -17,4 +17,8 @@ public class PlayerInfo {
     public String getIpUser() {
         return ip_user;
     }
+
+    public String toString() {
+        return "PlayerInfo{ip_connect=" + ip_connect + ", ip_user=" + ip_user + "}";
+    }
 }
