@@ -10,6 +10,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.URI;
@@ -45,10 +46,15 @@ public class APIRequest {
     }
 
     public ApiResponse sendRequest() throws URISyntaxException, IOException {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpResponse response;
-        HttpRequestBase request;
+        HttpRequestBase request = getHttpRequestBase();
 
+        for (Map.Entry<String, String> entry : getHeaders().entrySet())
+            request.addHeader(entry.getKey(), entry.getValue());
+
+        return callApi(request);
+    }
+
+    private @NotNull HttpRequestBase getHttpRequestBase() throws URISyntaxException, UnsupportedEncodingException {
         switch (method.name()) {
             case "GET":
                 HttpGet httpGet = new HttpGet(this.url);
@@ -62,51 +68,57 @@ public class APIRequest {
                     httpGet.setURI(uri);
                 }
 
-                request = httpGet;
-                break;
+                return httpGet;
             case "DELETE":
-                request = new HttpDelete(this.url);
-                break;
+                return new HttpDelete(this.url);
             case "PUT":
                 HttpPut httpput = new HttpPut(this.url);
                 // Request parameters and other properties.
                 StringEntity entity = new StringEntity(parameters.toString());
                 httpput.setEntity(entity);
 
-                request = httpput;
-                break;
+                return httpput;
             default: // POST
                 HttpPost httppost = new HttpPost(this.url);
                 // Request parameters and other properties.
                 entity = new StringEntity(parameters.toString());
                 httppost.setEntity(entity);
 
-                request = httppost;
-                break;
+                return httppost;
         }
-        for (Map.Entry<String, String> entry : getHeaders().entrySet())
-            request.addHeader(entry.getKey(), entry.getValue());
+    }
+
+    private ApiResponse callApi(HttpRequestBase request) throws IOException {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
 
         // Call API
-        response = httpclient.execute(request);
+        HttpResponse response = httpclient.execute(request);
 
         // Build response
+        ApiResponse apiResponse = buildApiResponse(response);
+
+        // Close client
+        httpclient.close();
+
+        return apiResponse;
+    }
+
+
+    private ApiResponse buildApiResponse(HttpResponse response) throws IOException {
         int status_code = response.getStatusLine().getStatusCode();
         String response_string = null;
         JsonElement json_element = null;
+
         HttpEntity entity = response.getEntity();
+
         if (entity != null) {
             try (InputStream inputStream = entity.getContent()) {
-                response_string = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
-                JsonParser parser = new JsonParser();
-
-                json_element = parser.parse(response_string);
-                if (!json_element.isJsonNull()) {
-                    JsonObject json_object = (JsonObject) json_element;
-                }
+                response_string = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+                        .lines()
+                        .collect(Collectors.joining("\n"));
+                json_element = JsonParser.parseString(response_string);
             }
         }
-        httpclient.close();
 
         return new ApiResponse(status_code, response_string, json_element);
     }
