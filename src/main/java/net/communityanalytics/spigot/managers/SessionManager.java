@@ -19,7 +19,7 @@ public class SessionManager {
 
     public SessionManager() {
         SpigotPlugin.logger().printDebug("Session manager started");
-        scheduledFuture = Bukkit.getScheduler().runTaskTimer(SpigotPlugin.instance, () -> {
+        scheduledFuture = Bukkit.getScheduler().runTaskTimerAsynchronously(SpigotPlugin.instance, () -> {
             if (this.scheduledFuture != null && SpigotPlugin.logger() != null && !SpigotPlugin.logger().isPluginEnable()) {
                 this.scheduledFuture.cancel();
             } else {
@@ -67,7 +67,7 @@ public class SessionManager {
             }
         }
 
-        if (sessions.size() == 0) {
+        if (sessions.isEmpty()) {
             // No sessions to send
             SpigotPlugin.logger().printDebug("No session to send to API");
             return;
