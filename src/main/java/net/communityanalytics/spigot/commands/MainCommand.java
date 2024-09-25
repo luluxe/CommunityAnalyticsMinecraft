@@ -21,6 +21,11 @@ public class MainCommand extends Command {
                 sender.sendMessage("§e» §cCheck your token in config.yml");
                 return;
             }
+
+            if (response.getStatus() == 500) {
+                sender.sendMessage("§cError: Unable to connect to the server. Please check your network connection or try again later.");
+            }
+
             sender.sendMessage("§f(§b§lCommunityAnalytics§f) §7Plugin information:");
             sender.sendMessage("§e» §7Status: §aConnected");
             sender.sendMessage("§e» §7Version §a" + plugin.getDescription().getVersion() + " §7(Dernière §e" + response.getStringArg("plugin_version") + "§7)");

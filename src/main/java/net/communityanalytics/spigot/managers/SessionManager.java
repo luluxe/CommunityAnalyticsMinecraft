@@ -79,20 +79,22 @@ public class SessionManager {
         SpigotPlugin.logger().printDebug("Sending " + sessions.size() + " sessions to API");
         APIRequest request = SpigotAPI.sessionStore(data);
 
-        try {
-            ApiResponse response = request.sendRequest();
-            if (response.getStatus() == 402) {
-                SpigotPlugin.logger().printError("Your subscription no longer allows you to receive new information. Please upgrade your subscription.");
-                return;
-            }
-            if (response.getStatus() != 200) {
-                SpigotPlugin.logger().printError("Can't auth to API: Check your token in config.yml");
-                return;
-            }
-
-            SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
-        } catch (Exception e) {
-            e.printStackTrace();
+        ApiResponse response = request.sendRequest();
+        if (response.getStatus() == 402) {
+            SpigotPlugin.logger().printError("Your subscription no longer allows you to receive new information. Please upgrade your subscription.");
+            return;
         }
+
+        if (response.getStatus() == 500) {
+            SpigotPlugin.logger().printError("Unable to connect to the server. Please check your network connection or try again later.");
+            return;
+        }
+
+        if (response.getStatus() != 200) {
+            SpigotPlugin.logger().printError("Can't auth to API: Check your token in config.yml");
+            return;
+        }
+
+        SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
     }
 }

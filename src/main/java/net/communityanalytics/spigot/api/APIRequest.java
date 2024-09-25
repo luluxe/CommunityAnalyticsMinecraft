@@ -45,13 +45,17 @@ public class APIRequest {
         return headers;
     }
 
-    public ApiResponse sendRequest() throws URISyntaxException, IOException {
-        HttpRequestBase request = getHttpRequestBase();
+    public ApiResponse sendRequest() {
+        try {
+            HttpRequestBase request = getHttpRequestBase();
 
-        for (Map.Entry<String, String> entry : getHeaders().entrySet())
-            request.addHeader(entry.getKey(), entry.getValue());
+            for (Map.Entry<String, String> entry : getHeaders().entrySet())
+                request.addHeader(entry.getKey(), entry.getValue());
 
-        return callApi(request);
+            return callApi(request);
+        } catch (IOException | URISyntaxException e) {
+            return new ApiResponse(500, null, null);
+        }
     }
 
     private @NotNull HttpRequestBase getHttpRequestBase() throws URISyntaxException, UnsupportedEncodingException {
