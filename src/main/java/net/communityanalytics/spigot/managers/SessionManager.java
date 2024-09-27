@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SessionManager {
     private final List<Session> sessions = new ArrayList<Session>();
@@ -52,26 +53,19 @@ public class SessionManager {
         JsonObject data = new JsonObject();
         JsonArray sessions = new JsonArray();
 
-        // We will retrieve the list of sessions that are completed and valid
-        Iterator<Session> iterator = this.sessions.iterator();
-        while (iterator.hasNext()) {
-            Session session = iterator.next();
-            // Si la session est terminate
-            if (session.isFinish()) {
-                iterator.remove();
+        List<Session> sessionToSend = this.sessions
+                .stream()
+                .filter(session -> session.isFinish() && session.isValid())
+                .collect(Collectors.toList());
 
-                // If the session is valid
-                if (session.isValid()) {
-                    sessions.add(session.toJSONObject());
-                }
-            }
-        }
+        sessionToSend.forEach(session -> sessions.add(session.toJSONObject()));
 
+        // No sessions to send
         if (sessions.isEmpty()) {
-            // No sessions to send
             SpigotPlugin.logger().printDebug("No session to send to API");
             return;
         }
+
         data.addProperty("where", SpigotPlugin.config().getServerId());
         data.add("sessions", sessions);
 
@@ -80,6 +74,7 @@ public class SessionManager {
         APIRequest request = SpigotAPI.sessionStore(data);
 
         ApiResponse response = request.sendRequest();
+
         if (response.getStatus() == 402) {
             SpigotPlugin.logger().printError("Your subscription no longer allows you to receive new information. Please upgrade your subscription.");
             return;
@@ -95,6 +90,8 @@ public class SessionManager {
             return;
         }
 
+        SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
+        this.sessions.removeAll(sessionToSend);
         SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
     }
 }
