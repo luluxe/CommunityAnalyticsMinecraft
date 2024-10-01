@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class SessionManager {
-    private final List<Session> sessions = new ArrayList<Session>();
+    private final List<Session> sessions = new ArrayList<>();
     private BukkitTask scheduledFuture = null;
 
     public SessionManager() {
@@ -90,7 +90,6 @@ public class SessionManager {
             return;
         }
 
-        SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
         this.sessions.removeAll(sessionToSend);
         SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
     }
