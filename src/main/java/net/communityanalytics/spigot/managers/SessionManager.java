@@ -12,9 +12,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SessionManager {
-    private final List<Session> sessions = new ArrayList<Session>();
+    private final List<Session> sessions = new ArrayList<>();
     private BukkitTask scheduledFuture = null;
 
     public SessionManager() {
@@ -36,7 +37,10 @@ public class SessionManager {
      * @return Optional<Session> Optional that can contain the session
      */
     public Optional<Session> find(UUID uuid) {
-        return this.sessions.stream().filter(session -> session.getUuid().equals(uuid)).findFirst();
+        return this.sessions
+                .stream()
+                .filter(session -> session.getUuid().equals(uuid) && !session.isFinish())
+                .findFirst();
     }
 
     /**
@@ -52,26 +56,23 @@ public class SessionManager {
         JsonObject data = new JsonObject();
         JsonArray sessions = new JsonArray();
 
-        // We will retrieve the list of sessions that are completed and valid
-        Iterator<Session> iterator = this.sessions.iterator();
-        while (iterator.hasNext()) {
-            Session session = iterator.next();
-            // Si la session est terminate
-            if (session.isFinish()) {
-                iterator.remove();
+        SpigotPlugin.logger().printDebug("All tracked sessions : " + this.sessions);
 
-                // If the session is valid
-                if (session.isValid()) {
-                    sessions.add(session.toJSONObject());
-                }
-            }
-        }
+        List<Session> sessionToSend = this.sessions
+                .stream()
+                .filter(session -> session.isFinish() && session.isValid())
+                .collect(Collectors.toList());
 
+        sessionToSend.forEach(session -> sessions.add(session.toJSONObject()));
+
+        // No sessions to send
         if (sessions.isEmpty()) {
-            // No sessions to send
             SpigotPlugin.logger().printDebug("No session to send to API");
             return;
         }
+
+        SpigotPlugin.logger().printDebug("Sending sessions : " + sessionToSend);
+
         data.addProperty("where", SpigotPlugin.config().getServerId());
         data.add("sessions", sessions);
 
@@ -80,6 +81,7 @@ public class SessionManager {
         APIRequest request = SpigotAPI.sessionStore(data);
 
         ApiResponse response = request.sendRequest();
+
         if (response.getStatus() == 402) {
             SpigotPlugin.logger().printError("Your subscription no longer allows you to receive new information. Please upgrade your subscription.");
             return;
@@ -95,6 +97,7 @@ public class SessionManager {
             return;
         }
 
+        this.sessions.removeAll(sessionToSend);
         SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
     }
 }
