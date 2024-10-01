@@ -56,6 +56,8 @@ public class SessionManager {
         JsonObject data = new JsonObject();
         JsonArray sessions = new JsonArray();
 
+        SpigotPlugin.logger().printDebug("All tracked sessions : " + this.sessions);
+
         List<Session> sessionToSend = this.sessions
                 .stream()
                 .filter(session -> session.isFinish() && session.isValid())
@@ -68,6 +70,8 @@ public class SessionManager {
             SpigotPlugin.logger().printDebug("No session to send to API");
             return;
         }
+
+        SpigotPlugin.logger().printDebug("Sending sessions : " + sessionToSend);
 
         data.addProperty("where", SpigotPlugin.config().getServerId());
         data.add("sessions", sessions);
