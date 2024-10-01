@@ -37,7 +37,10 @@ public class SessionManager {
      * @return Optional<Session> Optional that can contain the session
      */
     public Optional<Session> find(UUID uuid) {
-        return this.sessions.stream().filter(session -> session.getUuid().equals(uuid)).findFirst();
+        return this.sessions
+                .stream()
+                .filter(session -> session.getUuid().equals(uuid) && !session.isFinish())
+                .findFirst();
     }
 
     /**
