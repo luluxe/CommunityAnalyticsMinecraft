@@ -58,12 +58,14 @@ public class SessionManager {
 
         SpigotPlugin.logger().printDebug("All tracked sessions : " + this.sessions);
 
-        List<Session> sessionToSend = this.sessions
+        this.removeInvalidSessions();
+
+        // Session to send
+        List<Session> sessionsToSend = this.sessions
                 .stream()
                 .filter(session -> session.isFinish() && session.isValid())
                 .collect(Collectors.toList());
-
-        sessionToSend.forEach(session -> sessions.add(session.toJSONObject()));
+        sessionsToSend.forEach(session -> sessions.add(session.toJSONObject()));
 
         // No sessions to send
         if (sessions.isEmpty()) {
@@ -71,7 +73,7 @@ public class SessionManager {
             return;
         }
 
-        SpigotPlugin.logger().printDebug("Sending sessions : " + sessionToSend);
+        SpigotPlugin.logger().printDebug("Sending sessions : " + sessionsToSend);
 
         data.addProperty("where", SpigotPlugin.config().getServerId());
         data.add("sessions", sessions);
@@ -97,7 +99,19 @@ public class SessionManager {
             return;
         }
 
-        this.sessions.removeAll(sessionToSend);
+        this.sessions.removeAll(sessionsToSend);
         SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
+    }
+
+    private void removeInvalidSessions() {
+        List<Session> sessionsToRemove = this.sessions
+                .stream()
+                .filter(session -> session.isFinish() && !session.isValid())
+                .collect(Collectors.toList());
+        for (Session session : sessionsToRemove) {
+            SpigotPlugin.logger().printError("The session is invalid: " + session.getIpConnect());
+            SpigotPlugin.logger().printError("Contact CommunityAnalytics on Discord, if you can't solve this problem.");
+            this.sessions.remove(session);
+        }
     }
 }

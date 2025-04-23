@@ -16,11 +16,14 @@ public class SpigotConfigLoader implements ConfigLoader {
         String platform_api_token = yamlConfiguration.getString("platform-api-token");
         boolean debug = yamlConfiguration.getBoolean("debug");
         int minimum_session_duration = yamlConfiguration.getInt("minimum-session-duration");
-        String server_id = yamlConfiguration.getString("server-name");
-        if(server_id == null) {
-            server_id = yamlConfiguration.getString("server-id");
+        String server_tag = yamlConfiguration.getString("server-name");
+        if(server_tag == null) {
+            server_tag = yamlConfiguration.getString("server-id");
+            if(server_tag == null) {
+                server_tag = yamlConfiguration.getString("server-tag");
+            }
         }
 
-        return new SpigotConfig(platform_api_token, server_id, debug, minimum_session_duration);
+        return new SpigotConfig(platform_api_token, server_tag, debug, minimum_session_duration);
     }
 }

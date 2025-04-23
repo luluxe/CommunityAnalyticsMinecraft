@@ -36,6 +36,10 @@ public class Session {
         return uuid;
     }
 
+    public String getIpConnect() {
+        return ip_connect;
+    }
+
     // Use when proxy send player info
 
     public void setIp_connect(String ip_connect) {

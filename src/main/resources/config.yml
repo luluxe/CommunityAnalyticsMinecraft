@@ -12,6 +12,8 @@ debug: false
 # in order to be counted. This is useful to prevent players logging
 # in and out (e.g. a hub) being treated as a player.
 minimum-session-duration: 0
-
-# Server name is used to store player's sessions
-server-id: 'skyblock'
+  
+# Categorize which server or game mode the player is playing on.
+# As you will be able to filter on your dashboard with this tag.
+# You can use the same tag for multiple servers.
+server-tag: 'skyblock'
