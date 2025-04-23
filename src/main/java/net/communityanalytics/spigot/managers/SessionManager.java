@@ -12,14 +12,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SessionManager {
-    private final List<Session> sessions = new ArrayList<Session>();
+    private final List<Session> sessions = new ArrayList<>();
     private BukkitTask scheduledFuture = null;
 
     public SessionManager() {
         SpigotPlugin.logger().printDebug("Session manager started");
-        scheduledFuture = Bukkit.getScheduler().runTaskTimer(SpigotPlugin.instance, () -> {
+        scheduledFuture = Bukkit.getScheduler().runTaskTimerAsynchronously(SpigotPlugin.instance, () -> {
             if (this.scheduledFuture != null && SpigotPlugin.logger() != null && !SpigotPlugin.logger().isPluginEnable()) {
                 this.scheduledFuture.cancel();
             } else {
@@ -36,7 +37,10 @@ public class SessionManager {
      * @return Optional<Session> Optional that can contain the session
      */
     public Optional<Session> find(UUID uuid) {
-        return this.sessions.stream().filter(session -> session.getUuid().equals(uuid)).findFirst();
+        return this.sessions
+                .stream()
+                .filter(session -> session.getUuid().equals(uuid) && !session.isFinish())
+                .findFirst();
     }
 
     /**
@@ -52,26 +56,25 @@ public class SessionManager {
         JsonObject data = new JsonObject();
         JsonArray sessions = new JsonArray();
 
-        // We will retrieve the list of sessions that are completed and valid
-        Iterator<Session> iterator = this.sessions.iterator();
-        while (iterator.hasNext()) {
-            Session session = iterator.next();
-            // Si la session est terminate
-            if (session.isFinish()) {
-                iterator.remove();
+        SpigotPlugin.logger().printDebug("All tracked sessions : " + this.sessions);
 
-                // If the session is valid
-                if (session.isValid()) {
-                    sessions.add(session.toJSONObject());
-                }
-            }
-        }
+        this.removeInvalidSessions();
 
-        if (sessions.size() == 0) {
-            // No sessions to send
+        // Session to send
+        List<Session> sessionsToSend = this.sessions
+                .stream()
+                .filter(session -> session.isFinish() && session.isValid())
+                .collect(Collectors.toList());
+        sessionsToSend.forEach(session -> sessions.add(session.toJSONObject()));
+
+        // No sessions to send
+        if (sessions.isEmpty()) {
             SpigotPlugin.logger().printDebug("No session to send to API");
             return;
         }
+
+        SpigotPlugin.logger().printDebug("Sending sessions : " + sessionsToSend);
+
         data.addProperty("where", SpigotPlugin.config().getServerId());
         data.add("sessions", sessions);
 
@@ -79,20 +82,36 @@ public class SessionManager {
         SpigotPlugin.logger().printDebug("Sending " + sessions.size() + " sessions to API");
         APIRequest request = SpigotAPI.sessionStore(data);
 
-        try {
-            ApiResponse response = request.sendRequest();
-            if (response.getStatus() == 402) {
-                SpigotPlugin.logger().printError("Your subscription no longer allows you to receive new information. Please upgrade your subscription.");
-                return;
-            }
-            if (response.getStatus() != 200) {
-                SpigotPlugin.logger().printError("Can't auth to API: Check your token in config.yml");
-                return;
-            }
+        ApiResponse response = request.sendRequest();
 
-            SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (response.getStatus() == 402) {
+            SpigotPlugin.logger().printError("Your subscription no longer allows you to receive new information. Please upgrade your subscription.");
+            return;
+        }
+
+        if (response.getStatus() == 500) {
+            SpigotPlugin.logger().printError("Unable to connect to the server. Please check your network connection or try again later.");
+            return;
+        }
+
+        if (response.getStatus() != 200) {
+            SpigotPlugin.logger().printError("Can't auth to API: Check your token in config.yml");
+            return;
+        }
+
+        this.sessions.removeAll(sessionsToSend);
+        SpigotPlugin.logger().printDebug("Sessions sent to API with success.");
+    }
+
+    private void removeInvalidSessions() {
+        List<Session> sessionsToRemove = this.sessions
+                .stream()
+                .filter(session -> session.isFinish() && !session.isValid())
+                .collect(Collectors.toList());
+        for (Session session : sessionsToRemove) {
+            SpigotPlugin.logger().printError("The session is invalid: " + session.getIpConnect());
+            SpigotPlugin.logger().printError("Contact CommunityAnalytics on Discord, if you can't solve this problem.");
+            this.sessions.remove(session);
         }
     }
 }

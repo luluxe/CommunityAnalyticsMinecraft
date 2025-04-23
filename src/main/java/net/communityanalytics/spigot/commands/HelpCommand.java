@@ -14,7 +14,7 @@ public class HelpCommand extends Command {
     @Override
     protected void execute(SpigotPlugin plugin) {
         sender.sendMessage("§f(§b§lCommunityAnalytics§f) §7List of commands:");
-        sender.sendMessage("§e» §a/communityanalytics setup §b<key> [server_id]");
+        sender.sendMessage("§e» §a/communityanalytics setup §b<key> [server_tag]");
         sender.sendMessage("§e» §a/communityanalytics reload");
         sender.sendMessage("§e» §a/communityanalytics help");
     }

@@ -6,11 +6,17 @@ import net.communityanalytics.spigot.api.ApiResponse;
 
 public class PlatformManager {
     public boolean success = false;
-    public String version = "1.0.5";
+    public String version = "1.1.0";
 
     public void getPlatformInfo() {
         try {
             ApiResponse response = SpigotAPI.platformShow().sendRequest();
+
+            if (response.getStatus() == 500) {
+                SpigotPlugin.logger().printError("Unable to connect to the server. Please check your network connection or try again later.");
+                return;
+            }
+
             if (response.getStatus() != 200) {
                 SpigotPlugin.logger().printError("Can't auth to API:");
                 SpigotPlugin.logger().printError("Check your token in config.yml");

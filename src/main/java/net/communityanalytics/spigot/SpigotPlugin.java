@@ -49,7 +49,7 @@ public class SpigotPlugin extends JavaPlugin {
         logger.printInfo("=> https://communityanalytics.net/");
 
         // listeners
-        this.getServer().getPluginManager().registerEvents(new SessionListener(), this);
+        this.getServer().getPluginManager().registerEvents(new SessionListener(this), this);
         this.getServer().getPluginManager().registerEvents(new UpdateListener(), this);
 
         // configs
@@ -61,7 +61,7 @@ public class SpigotPlugin extends JavaPlugin {
 
         // channels
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, CommunityAnalytics.CHANNEL_INFO);
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, CommunityAnalytics.CHANNEL_INFO, new SessionListener());
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, CommunityAnalytics.CHANNEL_INFO, new SessionListener(this));
 
         // managers
         manager = new SessionManager();

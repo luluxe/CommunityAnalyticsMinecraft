@@ -1,7 +1,7 @@
 package net.communityanalytics.spigot.commands;
 
 import net.communityanalytics.spigot.SpigotPlugin;
-import org.bukkit.command.Command;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -18,30 +18,42 @@ public class DispatchCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        MainCommand main_command = new MainCommand("communityanalytics", getArgs(args,0), sender);
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull org.bukkit.command.Command command, @NotNull String label, String[] args) {
+        Command commandToExecute = args.length == 0
+                ? new MainCommand("communityanalytics", getArgs(args,0), sender)
+                : getSubCommand(args[0], args, sender);
 
-        if (args.length == 0) {
-            main_command.execute(plugin);
-            return true;
-        }
+        this.executeCommand(commandToExecute, sender);
 
-        String first_arg = args[0];
-        switch (first_arg) {
-            case "reload":
-                new ReloadCommand("reload", getArgs(args,1), sender).execute(plugin);
-                break;
-            case "setup":
-                new SetupCommand("setup", getArgs(args,1), sender).execute(plugin);
-                break;
-            case "help":
-                new HelpCommand("help", getArgs(args,1), sender).execute(plugin);
-                break;
-            default:
-                sender.sendMessage("§f(§b§lCommunityAnalytics§f) §cUnknown command ! type /communityanalytics help for more informations");
-                break;
-        }
         return true;
+    }
+
+    private void executeCommand(Command command, @NotNull CommandSender sender) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            if (command == null) {
+                sender.sendMessage("§f(§b§lCommunityAnalytics§f) §cUnknown command ! type /communityanalytics help for more informations");
+                return;
+            }
+
+            try {
+                command.execute(plugin);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private Command getSubCommand(String commandName, String[] args, @NotNull CommandSender sender) {
+        switch (commandName) {
+            case "reload":
+                return new ReloadCommand("reload", getArgs(args,1), sender);
+            case "setup":
+                return new SetupCommand("setup", getArgs(args,1), sender);
+            case "help":
+                return new HelpCommand("help", getArgs(args,1), sender);
+            default:
+                return null;
+        }
     }
 
     public List<String> getArgs(String [] args , int start) {

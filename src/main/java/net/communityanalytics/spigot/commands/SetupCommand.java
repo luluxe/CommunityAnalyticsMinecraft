@@ -17,20 +17,20 @@ public class SetupCommand extends Command {
     @Override
     protected void execute(SpigotPlugin plugin) {
         if (args.size() == 0) {
-            sender.sendMessage("§7Missing arg usage: §a/community setup §b<key> [server_id]");
+            sender.sendMessage("§7Missing arg usage: §a/community setup §b<key> [server_tag]");
             return;
         }
 
         // Parsing
-        String server_id = null;
+        String server_tag = null;
         if (args.size() == 2)
-            server_id = args.get(1);
+            server_tag = args.get(1);
 
         String path_name = "plugins/CommunityAnalytics/config.yml";
         try {
             FileUtil.replace(path_name, "platform-api-token:", "platform-api-token: '" + args.get(0)+ "'");
-            if (server_id != null)
-                FileUtil.replace(path_name, "server-id:", "server-id: '" + server_id + "'");
+            if (server_tag != null)
+                FileUtil.replace(path_name, "server-tag:", "server-tag: '" + server_tag + "'");
             sender.sendMessage("§f(§b§lCommunityAnalytics§f) §aConfig.yml was updated!");
 
             plugin.reload();

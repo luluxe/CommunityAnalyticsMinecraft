@@ -5,6 +5,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
+import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.proxy.Player;
@@ -12,14 +13,26 @@ import com.velocitypowered.api.proxy.ServerConnection;
 import net.communityanalytics.common.PlayerInfo;
 import net.communityanalytics.velocity.VelocityPlugin;
 
-import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public class PlayerInfoListener {
     private final Map<UUID, PlayerInfo> playerInfos = new HashMap<>();
+
+    /**
+     * @param event LoginEvent
+     */
+    @Subscribe
+    public void onPostLogin(LoginEvent event) {
+        Player player = event.getPlayer();
+
+        player.getVirtualHost().ifPresent(virtualDomain -> {
+            String playerIp = player.getRemoteAddress().getHostName();
+            this.playerInfos.put(player.getUniqueId(), new PlayerInfo(virtualDomain.getHostName(), playerIp));
+            //VelocityPlugin.instance.getLogger().info("LoginEvent| user:" + player.getUniqueId() + " host:" + virtualDomain.getHostName() + " ip:" + playerIp);
+        });
+    }
 
     /**
      * Get the playerInfo
@@ -29,12 +42,12 @@ public class PlayerInfoListener {
     @Subscribe
     public void onLogin(PostLoginEvent event) {
         Player player = event.getPlayer();
-        Optional<InetSocketAddress> optional = player.getVirtualHost();
-        if (optional.isPresent()) {
-            InetSocketAddress address = optional.get();
+
+        player.getVirtualHost().ifPresent(virtualDomain -> {
             String playerIp = player.getRemoteAddress().getHostName();
-            this.playerInfos.put(player.getUniqueId(), new PlayerInfo(address.getHostName(), playerIp));
-        }
+            this.playerInfos.put(player.getUniqueId(), new PlayerInfo(virtualDomain.getHostName(), playerIp));
+            //VelocityPlugin.instance.getLogger().info("PostLoginEvent| user:" + player.getUniqueId() + " host:" + virtualDomain.getHostName() + " ip:" + playerIp);
+        });
     }
 
     /**

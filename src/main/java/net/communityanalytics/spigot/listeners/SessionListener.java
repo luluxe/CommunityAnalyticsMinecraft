@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +23,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class SessionListener implements Listener, PluginMessageListener {
+    private final JavaPlugin pluginInstance;
     private final Map<UUID, String> ip_connect_players = new HashMap<>();
+
+    public SessionListener(JavaPlugin pluginInstance) {
+        this.pluginInstance = pluginInstance;
+    }
 
     /**
      * Get ip_connect : if the proxy does not respond
@@ -42,20 +48,22 @@ public class SessionListener implements Listener, PluginMessageListener {
      */
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        String ip_connect = this.ip_connect_players.getOrDefault(player.getUniqueId(), "");
-        this.ip_connect_players.remove(player.getUniqueId());
+        Bukkit.getScheduler().runTaskAsynchronously(pluginInstance, () -> {
+            Player player = event.getPlayer();
+            String ip_connect = this.ip_connect_players.getOrDefault(player.getUniqueId(), "");
+            this.ip_connect_players.remove(player.getUniqueId());
 
-        String ip_user = player.getAddress().getHostString();
-        Session session = new Session(player.getUniqueId(), player.getName(), ip_connect, ip_user);
-        SpigotPlugin.manager().add(session);
+            String ip_user = player.getAddress().getHostString();
+            Session session = new Session(player.getUniqueId(), player.getName(), ip_connect, ip_user);
+            SpigotPlugin.manager().add(session);
 
-        // Send a request to proxy to get the ip and host
-        Bukkit.getScheduler().runTaskLater(SpigotPlugin.instance, () -> {
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF(player.getUniqueId().toString());
-            player.sendPluginMessage(SpigotPlugin.instance, CommunityAnalytics.CHANNEL_INFO, out.toByteArray());
-        }, 10);
+            // Send a request to proxy to get the ip and host
+            Bukkit.getScheduler().runTaskLater(SpigotPlugin.instance, () -> {
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF(player.getUniqueId().toString());
+                player.sendPluginMessage(SpigotPlugin.instance, CommunityAnalytics.CHANNEL_INFO, out.toByteArray());
+            }, 10);
+        });
     }
 
     /**
@@ -83,20 +91,22 @@ public class SessionListener implements Listener, PluginMessageListener {
      */
     @Override
     public void onPluginMessageReceived(String channel, @NotNull Player player, byte[] message) {
-        if (!channel.equals(CommunityAnalytics.CHANNEL_INFO)) {
-            return;
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(pluginInstance, () -> {
+            if (!channel.equals(CommunityAnalytics.CHANNEL_INFO)) {
+                return;
+            }
 
-        ByteArrayDataInput in = ByteStreams.newDataInput(message);
-        String host = in.readUTF();
-        String ip = in.readUTF();
+            ByteArrayDataInput in = ByteStreams.newDataInput(message);
+            String host = in.readUTF();
+            String ip = in.readUTF();
 
-        Optional<Session> optionalSession = SpigotPlugin.manager().find(player.getUniqueId());
-        if (optionalSession.isPresent()) {
-            // Update session
-            Session session = optionalSession.get();
-            session.setIp_connect(host);
-            session.setIp_user(ip);
-        }
+            Optional<Session> optionalSession = SpigotPlugin.manager().find(player.getUniqueId());
+            if (optionalSession.isPresent()) {
+                // Update session
+                Session session = optionalSession.get();
+                session.setIp_connect(host);
+                session.setIp_user(ip);
+            }
+        });
     }
 }
